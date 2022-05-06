@@ -13,5 +13,7 @@ namespace TechEdu.Models.DataAccess.DataObjects
         public string SenhaHash { get; set; }
         public string Nome { get; set; }
         public int? PermissaoId { get; set; }
+
+        public virtual Permissao Permissao { get; set; }
     }
 }

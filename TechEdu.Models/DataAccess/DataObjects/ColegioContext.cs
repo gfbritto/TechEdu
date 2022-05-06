@@ -1,16 +1,18 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata;
 
 #nullable disable
 
 namespace TechEdu.Models.DataAccess.DataObjects
 {
-    public partial class ColegioContext : DbContext
+    public partial class colegioContext : DbContext
     {
-        public ColegioContext()
+        public colegioContext()
         {
         }
 
-        public ColegioContext(DbContextOptions<ColegioContext> options)
+        public colegioContext(DbContextOptions<colegioContext> options)
             : base(options)
         {
         }
@@ -19,12 +21,14 @@ namespace TechEdu.Models.DataAccess.DataObjects
         public virtual DbSet<Aula> Aulas { get; set; }
         public virtual DbSet<Colegio> Colegios { get; set; }
         public virtual DbSet<Endereco> Enderecos { get; set; }
-        public virtual DbSet<Materia> Materias { get; set; }
-        public virtual DbSet<Nota> Notas { get; set; }
+        public virtual DbSet<Materium> Materia { get; set; }
+        public virtual DbSet<Notum> Nota { get; set; }
         public virtual DbSet<PapelPessoa> PapelPessoas { get; set; }
         public virtual DbSet<Permissao> Permissaos { get; set; }
+        public virtual DbSet<PermissaoPessoa> PermissaoPessoas { get; set; }
         public virtual DbSet<Professor> Professors { get; set; }
         public virtual DbSet<Responsavel> Responsavels { get; set; }
+        public virtual DbSet<TipoNotum> TipoNota { get; set; }
         public virtual DbSet<TipoPessoa> TipoPessoas { get; set; }
         public virtual DbSet<Turma> Turmas { get; set; }
         public virtual DbSet<Usuario> Usuarios { get; set; }
@@ -33,7 +37,8 @@ namespace TechEdu.Models.DataAccess.DataObjects
         {
             if (!optionsBuilder.IsConfigured)
             {
-                optionsBuilder.UseMySql("server=servidordetestes.bounceme.net;port=3306;uid=adm;pwd=techedu;database=colegio", Microsoft.EntityFrameworkCore.ServerVersion.Parse("5.7.33-mysql"));
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
+                optionsBuilder.UseMySql("server=servidordetestes.bounceme.net;uid=adm;pwd=techedu;database=colegio", Microsoft.EntityFrameworkCore.ServerVersion.Parse("5.7.33-mysql"));
             }
         }
 
@@ -44,10 +49,13 @@ namespace TechEdu.Models.DataAccess.DataObjects
 
             modelBuilder.Entity<Aluno>(entity =>
             {
-                entity.ToTable("alunos");
+                entity.ToTable("aluno");
 
-                entity.HasIndex(e => e.Id, "id_UNIQUE")
-                    .IsUnique();
+                entity.HasIndex(e => e.EnderecoId, "FK_ALUNO_ENDERECO_idx");
+
+                entity.HasIndex(e => e.ResponsavelId, "FK_ALUNO_RESPONSAVEL_idx");
+
+                entity.HasIndex(e => e.TurmaId, "FK_ALUNO_TURMA_idx");
 
                 entity.Property(e => e.Id)
                     .HasColumnType("int(11)")
@@ -57,15 +65,16 @@ namespace TechEdu.Models.DataAccess.DataObjects
                     .HasMaxLength(17)
                     .HasColumnName("cpf");
 
-                entity.Property(e => e.Enderecos)
+                entity.Property(e => e.EnderecoId)
                     .HasColumnType("int(11)")
-                    .HasColumnName("enderecos");
+                    .HasColumnName("enderecoId");
 
                 entity.Property(e => e.Nascimento)
                     .HasColumnType("date")
                     .HasColumnName("nascimento");
 
                 entity.Property(e => e.Nome)
+                    .IsRequired()
                     .HasMaxLength(100)
                     .HasColumnName("nome");
 
@@ -73,18 +82,39 @@ namespace TechEdu.Models.DataAccess.DataObjects
                     .HasMaxLength(15)
                     .HasColumnName("ra");
 
-                entity.Property(e => e.Responsavel)
+                entity.Property(e => e.ResponsavelId)
                     .HasColumnType("int(11)")
-                    .HasColumnName("responsavel");
+                    .HasColumnName("responsavelId");
 
-                entity.Property(e => e.Turma)
+                entity.Property(e => e.TurmaId)
                     .HasColumnType("int(11)")
-                    .HasColumnName("turma");
+                    .HasColumnName("turmaId");
+
+                entity.HasOne(d => d.Endereco)
+                    .WithMany(p => p.Alunos)
+                    .HasForeignKey(d => d.EnderecoId)
+                    .HasConstraintName("FK_ALUNO_ENDERECO");
+
+                entity.HasOne(d => d.Responsavel)
+                    .WithMany(p => p.Alunos)
+                    .HasForeignKey(d => d.ResponsavelId)
+                    .HasConstraintName("FK_ALUNO_RESPONSAVEL");
+
+                entity.HasOne(d => d.Turma)
+                    .WithMany(p => p.Alunos)
+                    .HasForeignKey(d => d.TurmaId)
+                    .HasConstraintName("FK_ALUNO_TURMA");
             });
 
             modelBuilder.Entity<Aula>(entity =>
             {
-                entity.ToTable("aulas");
+                entity.ToTable("aula");
+
+                entity.HasIndex(e => e.MateriaId, "FK_AULA_MATERIA_idx");
+
+                entity.HasIndex(e => e.ProfessorId, "FK_AULA_PROFESSOR_idx");
+
+                entity.HasIndex(e => e.TurmaId, "FK_AULA_TURMA_idx");
 
                 entity.Property(e => e.Id)
                     .HasColumnType("int(11)")
@@ -102,35 +132,53 @@ namespace TechEdu.Models.DataAccess.DataObjects
                     .HasMaxLength(200)
                     .HasColumnName("local_aula");
 
-                entity.Property(e => e.Materias)
+                entity.Property(e => e.MateriaId)
                     .HasColumnType("int(11)")
-                    .HasColumnName("materias");
+                    .HasColumnName("materiaId");
 
-                entity.Property(e => e.Professor)
+                entity.Property(e => e.ProfessorId)
                     .HasColumnType("int(11)")
-                    .HasColumnName("professor");
+                    .HasColumnName("professorId");
 
-                entity.Property(e => e.Turma)
+                entity.Property(e => e.TurmaId)
                     .HasColumnType("int(11)")
-                    .HasColumnName("turma");
+                    .HasColumnName("turmaId");
+
+                entity.HasOne(d => d.Materia)
+                    .WithMany(p => p.Aulas)
+                    .HasForeignKey(d => d.MateriaId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_AULA_MATERIA");
+
+                entity.HasOne(d => d.Professor)
+                    .WithMany(p => p.Aulas)
+                    .HasForeignKey(d => d.ProfessorId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_AULA_PROFESSOR");
+
+                entity.HasOne(d => d.Turma)
+                    .WithMany(p => p.Aulas)
+                    .HasForeignKey(d => d.TurmaId)
+                    .HasConstraintName("FK_AULA_TURMA");
             });
 
             modelBuilder.Entity<Colegio>(entity =>
             {
-                entity.ToTable("colegios");
+                entity.ToTable("colegio");
 
                 entity.Property(e => e.Id)
                     .HasColumnType("int(11)")
                     .HasColumnName("id");
 
                 entity.Property(e => e.NomeColegio)
+                    .IsRequired()
                     .HasMaxLength(50)
-                    .HasColumnName("nome_colegio");
+                    .HasColumnName("nomeColegio");
             });
 
             modelBuilder.Entity<Endereco>(entity =>
             {
-                entity.ToTable("enderecos");
+                entity.ToTable("endereco");
 
                 entity.Property(e => e.Id)
                     .HasColumnType("int(11)")
@@ -144,74 +192,128 @@ namespace TechEdu.Models.DataAccess.DataObjects
                     .HasMaxLength(50)
                     .HasColumnName("complemento");
 
+                entity.Property(e => e.Logradouro)
+                    .IsRequired()
+                    .HasMaxLength(85)
+                    .HasColumnName("logradouro");
+
                 entity.Property(e => e.Numero)
                     .HasMaxLength(8)
                     .HasColumnName("numero");
             });
 
-            modelBuilder.Entity<Materia>(entity =>
+            modelBuilder.Entity<Materium>(entity =>
             {
-                entity.ToTable("materias");
+                entity.ToTable("materia");
 
                 entity.Property(e => e.Id)
                     .HasColumnType("int(11)")
                     .HasColumnName("id");
 
                 entity.Property(e => e.Nome)
+                    .IsRequired()
                     .HasMaxLength(50)
                     .HasColumnName("nome");
             });
 
-            modelBuilder.Entity<Nota>(entity =>
+            modelBuilder.Entity<Notum>(entity =>
             {
-                entity.ToTable("notas");
+                entity.ToTable("nota");
+
+                entity.HasIndex(e => e.AulaId, "FK_AULA_idx");
+
+                entity.HasIndex(e => e.AlunoId, "FK_NOTAS_ALUNO_idx");
+
+                entity.HasIndex(e => e.TurmaId, "FK_TURMA_idx");
 
                 entity.Property(e => e.Id)
                     .HasColumnType("int(11)")
                     .HasColumnName("id");
 
-                entity.Property(e => e.Aluno)
+                entity.Property(e => e.AlunoId)
                     .HasColumnType("int(11)")
-                    .HasColumnName("aluno");
+                    .HasColumnName("alunoId");
 
-                entity.Property(e => e.Aula)
+                entity.Property(e => e.AulaId)
                     .HasColumnType("int(11)")
-                    .HasColumnName("aula");
+                    .HasColumnName("aulaId");
 
                 entity.Property(e => e.Data)
                     .HasColumnType("datetime")
                     .HasColumnName("data");
 
-                entity.Property(e => e.Nota1).HasColumnName("nota");
+                entity.Property(e => e.Nota).HasColumnName("nota");
 
                 entity.Property(e => e.PosicaoNota)
                     .HasColumnType("int(11)")
                     .HasColumnName("posicao_nota");
 
-                entity.Property(e => e.Turmas)
+                entity.Property(e => e.TurmaId)
                     .HasColumnType("int(11)")
-                    .HasColumnName("turmas");
+                    .HasColumnName("turmaId");
+
+                entity.HasOne(d => d.Aluno)
+                    .WithMany(p => p.Nota)
+                    .HasForeignKey(d => d.AlunoId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_NOTA_ALUNO");
+
+                entity.HasOne(d => d.Aula)
+                    .WithMany(p => p.Nota)
+                    .HasForeignKey(d => d.AulaId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_NOTA_AULA");
+
+                entity.HasOne(d => d.Turma)
+                    .WithMany(p => p.Nota)
+                    .HasForeignKey(d => d.TurmaId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_NOTA_TURMA");
             });
 
             modelBuilder.Entity<PapelPessoa>(entity =>
             {
                 entity.ToTable("papel_pessoa");
 
+                entity.HasIndex(e => e.AlunoId, "FK_ALUNO_idx");
+
+                entity.HasIndex(e => e.ProfessorId, "FK_PROFESSOR_idx");
+
+                entity.HasIndex(e => e.TipoPessoaId, "FK_TIPO_PESSOA_idx");
+
                 entity.Property(e => e.Id)
                     .HasColumnType("int(11)")
                     .HasColumnName("id");
 
-                entity.Property(e => e.Aluno)
+                entity.Property(e => e.AlunoId)
                     .HasColumnType("int(11)")
-                    .HasColumnName("aluno");
+                    .HasColumnName("alunoId");
 
-                entity.Property(e => e.Professor)
+                entity.Property(e => e.ProfessorId)
                     .HasColumnType("int(11)")
-                    .HasColumnName("professor");
+                    .HasColumnName("professorId");
 
-                entity.Property(e => e.TipoPessoa)
+                entity.Property(e => e.TipoPessoaId)
                     .HasColumnType("int(11)")
-                    .HasColumnName("tipo_pessoa");
+                    .HasColumnName("tipoPessoaId");
+
+                entity.HasOne(d => d.Aluno)
+                    .WithMany(p => p.PapelPessoas)
+                    .HasForeignKey(d => d.AlunoId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_PAPELPESSOA_ALUNO");
+
+                entity.HasOne(d => d.Professor)
+                    .WithMany(p => p.PapelPessoas)
+                    .HasForeignKey(d => d.ProfessorId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_PAPELPESSOA_PROFESSOR");
+
+                entity.HasOne(d => d.TipoPessoa)
+                    .WithMany(p => p.PapelPessoas)
+                    .HasForeignKey(d => d.TipoPessoaId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_PAPELPESSOA_TIPOPESSOA");
             });
 
             modelBuilder.Entity<Permissao>(entity =>
@@ -224,7 +326,40 @@ namespace TechEdu.Models.DataAccess.DataObjects
 
                 entity.Property(e => e.NomePermissao)
                     .HasMaxLength(50)
-                    .HasColumnName("nome_permissao");
+                    .HasColumnName("nomePermissao");
+            });
+
+            modelBuilder.Entity<PermissaoPessoa>(entity =>
+            {
+                entity.ToTable("permissao_pessoa");
+
+                entity.HasIndex(e => e.PapelPessoaId, "FK_PAPEL_PESSOA_idx");
+
+                entity.HasIndex(e => e.PermissaoId, "FK_PERMISSAO_PESSOA");
+
+                entity.Property(e => e.Id)
+                    .HasColumnType("int(11)")
+                    .HasColumnName("id");
+
+                entity.Property(e => e.PapelPessoaId)
+                    .HasColumnType("int(11)")
+                    .HasColumnName("papelPessoaId");
+
+                entity.Property(e => e.PermissaoId)
+                    .HasColumnType("int(11)")
+                    .HasColumnName("permissaoId");
+
+                entity.HasOne(d => d.PapelPessoa)
+                    .WithMany(p => p.PermissaoPessoas)
+                    .HasForeignKey(d => d.PapelPessoaId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_PERMISSAO_PAPELPESSOA");
+
+                entity.HasOne(d => d.Permissao)
+                    .WithMany(p => p.PermissaoPessoas)
+                    .HasForeignKey(d => d.PermissaoId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_PERMISSAO_PESSOA");
             });
 
             modelBuilder.Entity<Professor>(entity =>
@@ -273,6 +408,19 @@ namespace TechEdu.Models.DataAccess.DataObjects
                     .HasColumnName("telefone");
             });
 
+            modelBuilder.Entity<TipoNotum>(entity =>
+            {
+                entity.ToTable("tipo_nota");
+
+                entity.Property(e => e.Id)
+                    .HasColumnType("int(11)")
+                    .HasColumnName("id");
+
+                entity.Property(e => e.QuantidadeNota)
+                    .HasColumnType("int(11)")
+                    .HasColumnName("quantidade_nota");
+            });
+
             modelBuilder.Entity<TipoPessoa>(entity =>
             {
                 entity.ToTable("tipo_pessoa");
@@ -288,24 +436,33 @@ namespace TechEdu.Models.DataAccess.DataObjects
 
             modelBuilder.Entity<Turma>(entity =>
             {
-                entity.ToTable("turmas");
+                entity.ToTable("turma");
+
+                entity.HasIndex(e => e.ColegioId, "FK_COLEGIO_idx");
 
                 entity.Property(e => e.Id)
                     .HasColumnType("int(11)")
                     .HasColumnName("id");
 
-                entity.Property(e => e.Colegio)
+                entity.Property(e => e.ColegioId)
                     .HasColumnType("int(11)")
-                    .HasColumnName("colegio");
+                    .HasColumnName("colegioId");
 
-                entity.Property(e => e.NomeClasse)
+                entity.Property(e => e.Nome)
                     .HasMaxLength(45)
-                    .HasColumnName("nome_classe");
+                    .HasColumnName("nome");
+
+                entity.HasOne(d => d.Colegio)
+                    .WithMany(p => p.Turmas)
+                    .HasForeignKey(d => d.ColegioId)
+                    .HasConstraintName("FK_TURMA_COLEGIO");
             });
 
             modelBuilder.Entity<Usuario>(entity =>
             {
-                entity.ToTable("usuarios");
+                entity.ToTable("usuario");
+
+                entity.HasIndex(e => e.PermissaoId, "FK_PERMISSAOID_idx");
 
                 entity.Property(e => e.Id)
                     .HasColumnType("int(11)")
@@ -317,19 +474,24 @@ namespace TechEdu.Models.DataAccess.DataObjects
 
                 entity.Property(e => e.PapelPessoaId)
                     .HasColumnType("int(11)")
-                    .HasColumnName("papel_pessoa_id");
+                    .HasColumnName("papelPessoaId");
 
                 entity.Property(e => e.PermissaoId)
                     .HasColumnType("int(11)")
-                    .HasColumnName("permissao_id");
+                    .HasColumnName("permissaoId");
 
                 entity.Property(e => e.SenhaHash)
                     .HasMaxLength(64)
-                    .HasColumnName("senha_hash");
+                    .HasColumnName("senhaHash");
 
                 entity.Property(e => e.UsuarioHash)
                     .HasMaxLength(64)
-                    .HasColumnName("usuario_hash");
+                    .HasColumnName("usuarioHash");
+
+                entity.HasOne(d => d.Permissao)
+                    .WithMany(p => p.Usuarios)
+                    .HasForeignKey(d => d.PermissaoId)
+                    .HasConstraintName("FK_USUARIO_PERMISSAO");
             });
 
             OnModelCreatingPartial(modelBuilder);
