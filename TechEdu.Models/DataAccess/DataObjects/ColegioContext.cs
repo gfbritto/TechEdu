@@ -1,18 +1,16 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata;
+﻿using Microsoft.EntityFrameworkCore;
 
 #nullable disable
 
 namespace TechEdu.Models.DataAccess.DataObjects
 {
-    public partial class colegioContext : DbContext
+    public partial class ColegioContext : DbContext
     {
-        public colegioContext()
+        public ColegioContext()
         {
         }
 
-        public colegioContext(DbContextOptions<colegioContext> options)
+        public ColegioContext(DbContextOptions<ColegioContext> options)
             : base(options)
         {
         }
