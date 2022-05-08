@@ -14,10 +14,10 @@
 </head>
 <body class="background-default h-100">
     <div class="min-vh-100 d-flex flex-column justify-content-between">
-        <header>
+        <div>
             <nav class="navbar navbar-expand-lg navbar-dark background-primary">
                 <div class="container-fluid fs-4">
-                    <a class="navbar-brand fs-4" asp-area="" asp-controller="Home" asp-action="index">
+                    <a class="navbar-brand fs-4" asp-area=" " asp-controller=" Home" asp-action="index">
                         <img src="https://getbootstrap.com/docs/5.0/assets/brand/bootstrap-logo.svg" alt="" width="30" height="24"
                              class="d-inline-block align-text-top">
                         TechEdu
@@ -32,13 +32,13 @@
                                 <a class="nav-link active" aria-current="page" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                             </li>
                             <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button"
+                                <a class="nav-link dropdown-toggle" id="navbarDropdownMenuLink" role="button"
                                    data-bs-toggle="dropdown" aria-expanded="false">
                                     Turmas
                                 </a>
                                 <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                                    <li><a class="dropdown-item" href="#">Turmas</a></li>
-                                    <li><a class="dropdown-item" href="#">Alunos</a></li>
+                                    <li><a class="dropdown-item" asp-area="" asp-controller="Class" asp-action="index">Turmas</a></li>
+                                    <li><a class="dropdown-item" asp-area="" asp-controller="Student" asp-action="index">Alunos</a></li>
                                     <li><a class="dropdown-item" href="#">Notas</a></li>
                                     <li><a class="dropdown-item" href="#">Horários</a></li>
                                 </ul>
@@ -74,19 +74,19 @@
                     </div>
                 </div>
             </nav>
-        </header>
-        <div class="container">
-            <main role="main" class="pb-3">
-                @RenderBody()
+            <main>
+                <div class="container my-5">
+                    @RenderBody()
+                </div>
             </main>
         </div>
-
-        <footer class="border-top footer text-muted">
-            <div class="container">
-                &copy; 2022 - TechEdu - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+        <footer class="footer py-3 background-primary bottom-0 w-100">
+            <div class="container text-center">
+                <span class="text-light">Powered By: TechEdu Solutions 2022</span>
             </div>
         </footer>
     </div>
+
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
