@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 
-#nullable disable
-
 namespace TechEdu.Models.DataAccess.DataObjects
 {
     public partial class Notum
@@ -15,8 +13,8 @@ namespace TechEdu.Models.DataAccess.DataObjects
         public int? PosicaoNota { get; set; }
         public DateTime? Data { get; set; }
 
-        public virtual Aluno Aluno { get; set; }
-        public virtual Aula Aula { get; set; }
-        public virtual Turma Turma { get; set; }
+        public virtual Aluno Aluno { get; set; } = null!;
+        public virtual Aula Aula { get; set; } = null!;
+        public virtual Turma Turma { get; set; } = null!;
     }
 }

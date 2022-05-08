@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 
-#nullable disable
-
 namespace TechEdu.Models.DataAccess.DataObjects
 {
     public partial class Aula
@@ -18,11 +16,11 @@ namespace TechEdu.Models.DataAccess.DataObjects
         public int? TurmaId { get; set; }
         public DateTime? Horario { get; set; }
         public DateTime? Duracao { get; set; }
-        public string LocalAula { get; set; }
+        public string? LocalAula { get; set; }
 
-        public virtual Materium Materia { get; set; }
-        public virtual Professor Professor { get; set; }
-        public virtual Turma Turma { get; set; }
+        public virtual Materium Materia { get; set; } = null!;
+        public virtual Professor Professor { get; set; } = null!;
+        public virtual Turma? Turma { get; set; }
         public virtual ICollection<Notum> Nota { get; set; }
     }
 }

@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 
-#nullable disable
-
 namespace TechEdu.Models.DataAccess.DataObjects
 {
     public partial class PermissaoPessoa
@@ -11,7 +9,7 @@ namespace TechEdu.Models.DataAccess.DataObjects
         public int PermissaoId { get; set; }
         public int PapelPessoaId { get; set; }
 
-        public virtual PapelPessoa PapelPessoa { get; set; }
-        public virtual Permissao Permissao { get; set; }
+        public virtual PapelPessoa PapelPessoa { get; set; } = null!;
+        public virtual Permissao Permissao { get; set; } = null!;
     }
 }
