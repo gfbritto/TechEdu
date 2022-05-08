@@ -1,28 +1,29 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System;
+using System.Collections.Generic;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace TechEdu.Models.DataAccess.DataObjects
 {
-    public partial class ColegioContext : DbContext
+    public partial class colegioContext : DbContext
     {
-        public ColegioContext()
+        public colegioContext()
         {
         }
 
-        public ColegioContext(DbContextOptions<ColegioContext> options)
+        public colegioContext(DbContextOptions<colegioContext> options)
             : base(options)
         {
         }
 
         public virtual DbSet<Aluno> Alunos { get; set; } = null!;
         public virtual DbSet<Aula> Aulas { get; set; } = null!;
-        public virtual DbSet<Colegio> Colegios { get; set; } = null!;
         public virtual DbSet<Endereco> Enderecos { get; set; } = null!;
         public virtual DbSet<Materium> Materia { get; set; } = null!;
         public virtual DbSet<Notum> Nota { get; set; } = null!;
         public virtual DbSet<PapelPessoa> PapelPessoas { get; set; } = null!;
         public virtual DbSet<Permissao> Permissaos { get; set; } = null!;
         public virtual DbSet<PermissaoPessoa> PermissaoPessoas { get; set; } = null!;
-        public virtual DbSet<Pessoa> Pessoas { get; set; } = null!;
         public virtual DbSet<Professor> Professors { get; set; } = null!;
         public virtual DbSet<Responsavel> Responsavels { get; set; } = null!;
         public virtual DbSet<TipoNotum> TipoNota { get; set; } = null!;
@@ -41,17 +42,12 @@ namespace TechEdu.Models.DataAccess.DataObjects
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.UseCollation("latin1_swedish_ci")
-                .HasCharSet("latin1");
+            modelBuilder.UseCollation("utf8_general_ci")
+                .HasCharSet("utf8");
 
             modelBuilder.Entity<Aluno>(entity =>
             {
                 entity.ToTable("aluno");
-
-                entity.HasCharSet("utf8")
-                    .UseCollation("utf8_general_ci");
-
-                entity.HasIndex(e => e.PessoaId, "FK_ALUNO_PESSOA_idx");
 
                 entity.HasIndex(e => e.ResponsavelId, "FK_ALUNO_RESPONSAVEL_idx");
 
@@ -61,9 +57,11 @@ namespace TechEdu.Models.DataAccess.DataObjects
                     .HasColumnType("int(11)")
                     .HasColumnName("id");
 
-                entity.Property(e => e.PessoaId)
-                    .HasColumnType("int(11)")
-                    .HasColumnName("pessoaId");
+                entity.Property(e => e.DataNascimento).HasColumnName("dataNascimento");
+
+                entity.Property(e => e.PrimeiroNome)
+                    .HasMaxLength(45)
+                    .HasColumnName("primeiroNome");
 
                 entity.Property(e => e.Ra)
                     .HasMaxLength(15)
@@ -79,11 +77,9 @@ namespace TechEdu.Models.DataAccess.DataObjects
                     .HasColumnType("int(11)")
                     .HasColumnName("turmaId");
 
-                entity.HasOne(d => d.Pessoa)
-                    .WithMany(p => p.Alunos)
-                    .HasForeignKey(d => d.PessoaId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_ALUNO_PESSOA");
+                entity.Property(e => e.UltimoNome)
+                    .HasMaxLength(45)
+                    .HasColumnName("ultimoNome");
 
                 entity.HasOne(d => d.Responsavel)
                     .WithMany(p => p.Alunos)
@@ -99,9 +95,6 @@ namespace TechEdu.Models.DataAccess.DataObjects
             modelBuilder.Entity<Aula>(entity =>
             {
                 entity.ToTable("aula");
-
-                entity.HasCharSet("utf8")
-                    .UseCollation("utf8_general_ci");
 
                 entity.HasIndex(e => e.MateriaId, "FK_AULA_MATERIA_idx");
 
@@ -157,36 +150,19 @@ namespace TechEdu.Models.DataAccess.DataObjects
                     .HasConstraintName("FK_AULA_TURMA");
             });
 
-            modelBuilder.Entity<Colegio>(entity =>
-            {
-                entity.ToTable("colegio");
-
-                entity.HasCharSet("utf8")
-                    .UseCollation("utf8_general_ci");
-
-                entity.Property(e => e.Id)
-                    .HasColumnType("int(11)")
-                    .HasColumnName("id");
-
-                entity.Property(e => e.NomeColegio)
-                    .HasMaxLength(50)
-                    .HasColumnName("nomeColegio")
-                    .UseCollation("latin1_swedish_ci")
-                    .HasCharSet("latin1");
-            });
-
             modelBuilder.Entity<Endereco>(entity =>
             {
                 entity.ToTable("endereco");
 
-                entity.HasCharSet("utf8")
-                    .UseCollation("utf8_general_ci");
-
-                entity.HasIndex(e => e.PessoaId, "FK_ENDERECO_PESSOA_idx");
+                entity.HasIndex(e => e.AlunoId, "FK_ENDERECO_ALUNO_idx");
 
                 entity.Property(e => e.Id)
                     .HasColumnType("int(11)")
                     .HasColumnName("id");
+
+                entity.Property(e => e.AlunoId)
+                    .HasColumnType("int(11)")
+                    .HasColumnName("alunoId");
 
                 entity.Property(e => e.Cep)
                     .HasMaxLength(16)
@@ -212,23 +188,16 @@ namespace TechEdu.Models.DataAccess.DataObjects
                     .UseCollation("latin1_swedish_ci")
                     .HasCharSet("latin1");
 
-                entity.Property(e => e.PessoaId)
-                    .HasColumnType("int(11)")
-                    .HasColumnName("pessoaId");
-
-                entity.HasOne(d => d.Pessoa)
+                entity.HasOne(d => d.Aluno)
                     .WithMany(p => p.Enderecos)
-                    .HasForeignKey(d => d.PessoaId)
+                    .HasForeignKey(d => d.AlunoId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_ENDERECO_PESSOA");
+                    .HasConstraintName("FK_ENDERECO_ALUNO");
             });
 
             modelBuilder.Entity<Materium>(entity =>
             {
                 entity.ToTable("materia");
-
-                entity.HasCharSet("utf8")
-                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.Id)
                     .HasColumnType("int(11)")
@@ -244,9 +213,6 @@ namespace TechEdu.Models.DataAccess.DataObjects
             modelBuilder.Entity<Notum>(entity =>
             {
                 entity.ToTable("nota");
-
-                entity.HasCharSet("utf8")
-                    .UseCollation("utf8_general_ci");
 
                 entity.HasIndex(e => e.AulaId, "FK_AULA_idx");
 
@@ -303,9 +269,6 @@ namespace TechEdu.Models.DataAccess.DataObjects
             {
                 entity.ToTable("papel_pessoa");
 
-                entity.HasCharSet("utf8")
-                    .UseCollation("utf8_general_ci");
-
                 entity.HasIndex(e => e.AlunoId, "FK_ALUNO_idx");
 
                 entity.HasIndex(e => e.ProfessorId, "FK_PROFESSOR_idx");
@@ -351,9 +314,6 @@ namespace TechEdu.Models.DataAccess.DataObjects
             {
                 entity.ToTable("permissao");
 
-                entity.HasCharSet("utf8")
-                    .UseCollation("utf8_general_ci");
-
                 entity.Property(e => e.Id)
                     .HasColumnType("int(11)")
                     .HasColumnName("id");
@@ -368,9 +328,6 @@ namespace TechEdu.Models.DataAccess.DataObjects
             modelBuilder.Entity<PermissaoPessoa>(entity =>
             {
                 entity.ToTable("permissao_pessoa");
-
-                entity.HasCharSet("utf8")
-                    .UseCollation("utf8_general_ci");
 
                 entity.HasIndex(e => e.PapelPessoaId, "FK_PAPEL_PESSOA_idx");
 
@@ -401,43 +358,9 @@ namespace TechEdu.Models.DataAccess.DataObjects
                     .HasConstraintName("FK_PERMISSAO_PESSOA");
             });
 
-            modelBuilder.Entity<Pessoa>(entity =>
-            {
-                entity.ToTable("Pessoa");
-
-                entity.HasCharSet("utf8")
-                    .UseCollation("utf8_general_ci");
-
-                entity.Property(e => e.Id)
-                    .HasColumnType("int(11)")
-                    .ValueGeneratedNever()
-                    .HasColumnName("id");
-
-                entity.Property(e => e.Cpf)
-                    .HasMaxLength(11)
-                    .HasColumnName("cpf")
-                    .UseCollation("latin1_swedish_ci")
-                    .HasCharSet("latin1");
-
-                entity.Property(e => e.PrimeiroNome)
-                    .HasMaxLength(60)
-                    .HasColumnName("primeiroNome")
-                    .UseCollation("latin1_swedish_ci")
-                    .HasCharSet("latin1");
-
-                entity.Property(e => e.UltimoNome)
-                    .HasMaxLength(60)
-                    .HasColumnName("ultimoNome")
-                    .UseCollation("latin1_swedish_ci")
-                    .HasCharSet("latin1");
-            });
-
             modelBuilder.Entity<Professor>(entity =>
             {
                 entity.ToTable("professor");
-
-                entity.HasCharSet("utf8")
-                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.Id)
                     .HasColumnType("int(11)")
@@ -470,9 +393,6 @@ namespace TechEdu.Models.DataAccess.DataObjects
             {
                 entity.ToTable("responsavel");
 
-                entity.HasCharSet("utf8")
-                    .UseCollation("utf8_general_ci");
-
                 entity.Property(e => e.Id)
                     .HasColumnType("int(11)")
                     .HasColumnName("id");
@@ -500,9 +420,6 @@ namespace TechEdu.Models.DataAccess.DataObjects
             {
                 entity.ToTable("tipo_nota");
 
-                entity.HasCharSet("utf8")
-                    .UseCollation("utf8_general_ci");
-
                 entity.Property(e => e.Id)
                     .HasColumnType("int(11)")
                     .HasColumnName("id");
@@ -515,9 +432,6 @@ namespace TechEdu.Models.DataAccess.DataObjects
             modelBuilder.Entity<TipoPessoa>(entity =>
             {
                 entity.ToTable("tipo_pessoa");
-
-                entity.HasCharSet("utf8")
-                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.Id)
                     .HasColumnType("int(11)")
@@ -534,37 +448,20 @@ namespace TechEdu.Models.DataAccess.DataObjects
             {
                 entity.ToTable("turma");
 
-                entity.HasCharSet("utf8")
-                    .UseCollation("utf8_general_ci");
-
-                entity.HasIndex(e => e.ColegioId, "FK_COLEGIO_idx");
-
                 entity.Property(e => e.Id)
                     .HasColumnType("int(11)")
                     .HasColumnName("id");
-
-                entity.Property(e => e.ColegioId)
-                    .HasColumnType("int(11)")
-                    .HasColumnName("colegioId");
 
                 entity.Property(e => e.Nome)
                     .HasMaxLength(45)
                     .HasColumnName("nome")
                     .UseCollation("latin1_swedish_ci")
                     .HasCharSet("latin1");
-
-                entity.HasOne(d => d.Colegio)
-                    .WithMany(p => p.Turmas)
-                    .HasForeignKey(d => d.ColegioId)
-                    .HasConstraintName("FK_TURMA_COLEGIO");
             });
 
             modelBuilder.Entity<Usuario>(entity =>
             {
                 entity.ToTable("usuario");
-
-                entity.HasCharSet("utf8")
-                    .UseCollation("utf8_general_ci");
 
                 entity.HasIndex(e => e.PermissaoId, "FK_PERMISSAOID_idx");
 

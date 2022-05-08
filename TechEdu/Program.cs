@@ -7,7 +7,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 
 var connection = builder.Configuration.GetConnectionString("MySqlDefault");
-builder.Services.AddDbContext<ColegioContext>(options => options
+builder.Services.AddDbContext<colegioContext>(options => options
    .UseMySql(connection, ServerVersion.Parse("5.7.33-mysql"))
 );
 

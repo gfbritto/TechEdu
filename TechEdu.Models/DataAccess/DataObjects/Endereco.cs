@@ -10,8 +10,8 @@ namespace TechEdu.Models.DataAccess.DataObjects
         public string? Numero { get; set; }
         public string? Complemento { get; set; }
         public string Logradouro { get; set; } = null!;
-        public int PessoaId { get; set; }
+        public int AlunoId { get; set; }
 
-        public virtual Pessoa Pessoa { get; set; } = null!;
+        public virtual Aluno Aluno { get; set; } = null!;
     }
 }
