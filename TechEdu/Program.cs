@@ -4,7 +4,8 @@ using TechEdu.Models.DataAccess.DataObjects;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddControllersWithViews();
+builder.Services.AddControllersWithViews()
+    .AddRazorRuntimeCompilation();
 
 var connection = builder.Configuration.GetConnectionString("MySqlDefault");
 builder.Services.AddDbContext<colegioContext>(options => options
