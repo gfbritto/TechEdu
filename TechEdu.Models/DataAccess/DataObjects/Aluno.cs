@@ -9,7 +9,6 @@ namespace TechEdu.Models.DataAccess.DataObjects
         {
             Enderecos = new HashSet<Endereco>();
             Nota = new HashSet<Notum>();
-            PapelPessoas = new HashSet<PapelPessoa>();
         }
 
         public int Id { get; set; }
@@ -24,6 +23,5 @@ namespace TechEdu.Models.DataAccess.DataObjects
         public virtual Turma? Turma { get; set; }
         public virtual ICollection<Endereco> Enderecos { get; set; }
         public virtual ICollection<Notum> Nota { get; set; }
-        public virtual ICollection<PapelPessoa> PapelPessoas { get; set; }
     }
 }

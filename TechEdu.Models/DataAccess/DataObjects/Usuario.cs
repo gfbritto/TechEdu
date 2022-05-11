@@ -6,12 +6,12 @@ namespace TechEdu.Models.DataAccess.DataObjects
     public partial class Usuario
     {
         public int Id { get; set; }
-        public int? PapelPessoaId { get; set; }
-        public string? UsuarioHash { get; set; }
-        public string? SenhaHash { get; set; }
+        public string Email { get; set; } = null!;
+        public string Senha { get; set; } = null!;
         public string? Nome { get; set; }
-        public int? PermissaoId { get; set; }
+        public int PapelPessoaId { get; set; }
+        public string? UsuarioHash { get; set; }
 
-        public virtual Permissao? Permissao { get; set; }
+        public virtual PapelPessoa PapelPessoa { get; set; } = null!;
     }
 }

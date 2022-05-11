@@ -3,18 +3,15 @@ using System.Collections.Generic;
 
 namespace TechEdu.Models.DataAccess.DataObjects
 {
-    public partial class Professor
+    public partial class Materia
     {
-        public Professor()
+        public Materia()
         {
             Aulas = new HashSet<Aula>();
         }
 
         public int Id { get; set; }
-        public string? Nome { get; set; }
-        public int? Endereco { get; set; }
-        public string? Cpf { get; set; }
-        public string? Contato { get; set; }
+        public string Nome { get; set; } = null!;
 
         public virtual ICollection<Aula> Aulas { get; set; }
     }

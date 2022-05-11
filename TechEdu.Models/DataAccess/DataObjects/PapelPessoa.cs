@@ -7,17 +7,12 @@ namespace TechEdu.Models.DataAccess.DataObjects
     {
         public PapelPessoa()
         {
-            PermissaoPessoas = new HashSet<PermissaoPessoa>();
+            Usuarios = new HashSet<Usuario>();
         }
 
         public int Id { get; set; }
-        public int TipoPessoaId { get; set; }
-        public int ProfessorId { get; set; }
-        public int AlunoId { get; set; }
+        public string Descricao { get; set; } = null!;
 
-        public virtual Aluno Aluno { get; set; } = null!;
-        public virtual Professor Professor { get; set; } = null!;
-        public virtual TipoPessoa TipoPessoa { get; set; } = null!;
-        public virtual ICollection<PermissaoPessoa> PermissaoPessoas { get; set; }
+        public virtual ICollection<Usuario> Usuarios { get; set; }
     }
 }

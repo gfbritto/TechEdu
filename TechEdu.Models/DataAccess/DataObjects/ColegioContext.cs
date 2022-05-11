@@ -22,8 +22,6 @@ namespace TechEdu.Models.DataAccess.DataObjects
         public virtual DbSet<Materium> Materia { get; set; } = null!;
         public virtual DbSet<Notum> Nota { get; set; } = null!;
         public virtual DbSet<PapelPessoa> PapelPessoas { get; set; } = null!;
-        public virtual DbSet<Permissao> Permissaos { get; set; } = null!;
-        public virtual DbSet<PermissaoPessoa> PermissaoPessoas { get; set; } = null!;
         public virtual DbSet<Professor> Professors { get; set; } = null!;
         public virtual DbSet<Responsavel> Responsavels { get; set; } = null!;
         public virtual DbSet<TipoNotum> TipoNota { get; set; } = null!;
@@ -267,95 +265,15 @@ namespace TechEdu.Models.DataAccess.DataObjects
 
             modelBuilder.Entity<PapelPessoa>(entity =>
             {
-                entity.ToTable("papel_pessoa");
-
-                entity.HasIndex(e => e.AlunoId, "FK_ALUNO_idx");
-
-                entity.HasIndex(e => e.ProfessorId, "FK_PROFESSOR_idx");
-
-                entity.HasIndex(e => e.TipoPessoaId, "FK_TIPO_PESSOA_idx");
+                entity.ToTable("papelPessoa");
 
                 entity.Property(e => e.Id)
                     .HasColumnType("int(11)")
                     .HasColumnName("id");
 
-                entity.Property(e => e.AlunoId)
-                    .HasColumnType("int(11)")
-                    .HasColumnName("alunoId");
-
-                entity.Property(e => e.ProfessorId)
-                    .HasColumnType("int(11)")
-                    .HasColumnName("professorId");
-
-                entity.Property(e => e.TipoPessoaId)
-                    .HasColumnType("int(11)")
-                    .HasColumnName("tipoPessoaId");
-
-                entity.HasOne(d => d.Aluno)
-                    .WithMany(p => p.PapelPessoas)
-                    .HasForeignKey(d => d.AlunoId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_PAPELPESSOA_ALUNO");
-
-                entity.HasOne(d => d.Professor)
-                    .WithMany(p => p.PapelPessoas)
-                    .HasForeignKey(d => d.ProfessorId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_PAPELPESSOA_PROFESSOR");
-
-                entity.HasOne(d => d.TipoPessoa)
-                    .WithMany(p => p.PapelPessoas)
-                    .HasForeignKey(d => d.TipoPessoaId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_PAPELPESSOA_TIPOPESSOA");
-            });
-
-            modelBuilder.Entity<Permissao>(entity =>
-            {
-                entity.ToTable("permissao");
-
-                entity.Property(e => e.Id)
-                    .HasColumnType("int(11)")
-                    .HasColumnName("id");
-
-                entity.Property(e => e.NomePermissao)
-                    .HasMaxLength(50)
-                    .HasColumnName("nomePermissao")
-                    .UseCollation("latin1_swedish_ci")
-                    .HasCharSet("latin1");
-            });
-
-            modelBuilder.Entity<PermissaoPessoa>(entity =>
-            {
-                entity.ToTable("permissao_pessoa");
-
-                entity.HasIndex(e => e.PapelPessoaId, "FK_PAPEL_PESSOA_idx");
-
-                entity.HasIndex(e => e.PermissaoId, "FK_PERMISSAO_PESSOA");
-
-                entity.Property(e => e.Id)
-                    .HasColumnType("int(11)")
-                    .HasColumnName("id");
-
-                entity.Property(e => e.PapelPessoaId)
-                    .HasColumnType("int(11)")
-                    .HasColumnName("papelPessoaId");
-
-                entity.Property(e => e.PermissaoId)
-                    .HasColumnType("int(11)")
-                    .HasColumnName("permissaoId");
-
-                entity.HasOne(d => d.PapelPessoa)
-                    .WithMany(p => p.PermissaoPessoas)
-                    .HasForeignKey(d => d.PapelPessoaId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_PERMISSAO_PAPELPESSOA");
-
-                entity.HasOne(d => d.Permissao)
-                    .WithMany(p => p.PermissaoPessoas)
-                    .HasForeignKey(d => d.PermissaoId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_PERMISSAO_PESSOA");
+                entity.Property(e => e.Descricao)
+                    .HasMaxLength(55)
+                    .HasColumnName("descricao");
             });
 
             modelBuilder.Entity<Professor>(entity =>
@@ -418,7 +336,7 @@ namespace TechEdu.Models.DataAccess.DataObjects
 
             modelBuilder.Entity<TipoNotum>(entity =>
             {
-                entity.ToTable("tipo_nota");
+                entity.ToTable("tipoNota");
 
                 entity.Property(e => e.Id)
                     .HasColumnType("int(11)")
@@ -431,7 +349,7 @@ namespace TechEdu.Models.DataAccess.DataObjects
 
             modelBuilder.Entity<TipoPessoa>(entity =>
             {
-                entity.ToTable("tipo_pessoa");
+                entity.ToTable("tipoPessoa");
 
                 entity.Property(e => e.Id)
                     .HasColumnType("int(11)")
@@ -463,11 +381,15 @@ namespace TechEdu.Models.DataAccess.DataObjects
             {
                 entity.ToTable("usuario");
 
-                entity.HasIndex(e => e.PermissaoId, "FK_PERMISSAOID_idx");
+                entity.HasIndex(e => e.PapelPessoaId, "USUARIO_PAPELPESSOA_idx");
 
                 entity.Property(e => e.Id)
                     .HasColumnType("int(11)")
                     .HasColumnName("id");
+
+                entity.Property(e => e.Email)
+                    .HasMaxLength(100)
+                    .HasColumnName("email");
 
                 entity.Property(e => e.Nome)
                     .HasMaxLength(45)
@@ -479,13 +401,9 @@ namespace TechEdu.Models.DataAccess.DataObjects
                     .HasColumnType("int(11)")
                     .HasColumnName("papelPessoaId");
 
-                entity.Property(e => e.PermissaoId)
-                    .HasColumnType("int(11)")
-                    .HasColumnName("permissaoId");
-
-                entity.Property(e => e.SenhaHash)
+                entity.Property(e => e.Senha)
                     .HasMaxLength(64)
-                    .HasColumnName("senhaHash")
+                    .HasColumnName("senha")
                     .UseCollation("latin1_swedish_ci")
                     .HasCharSet("latin1");
 
@@ -495,10 +413,11 @@ namespace TechEdu.Models.DataAccess.DataObjects
                     .UseCollation("latin1_swedish_ci")
                     .HasCharSet("latin1");
 
-                entity.HasOne(d => d.Permissao)
+                entity.HasOne(d => d.PapelPessoa)
                     .WithMany(p => p.Usuarios)
-                    .HasForeignKey(d => d.PermissaoId)
-                    .HasConstraintName("FK_USUARIO_PERMISSAO");
+                    .HasForeignKey(d => d.PapelPessoaId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("USUARIO_PAPELPESSOA");
             });
 
             OnModelCreatingPartial(modelBuilder);
