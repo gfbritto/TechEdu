@@ -16,22 +16,6 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `Pessoa`
---
-
-DROP TABLE IF EXISTS `Pessoa`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `Pessoa` (
-  `id` int(11) NOT NULL,
-  `primeiroNome` varchar(60) CHARACTER SET latin1 NOT NULL,
-  `ultimoNome` varchar(60) CHARACTER SET latin1 NOT NULL,
-  `cpf` varchar(11) CHARACTER SET latin1 DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
 -- Table structure for table `aluno`
 --
 
@@ -43,12 +27,12 @@ CREATE TABLE `aluno` (
   `turmaId` int(11) DEFAULT NULL,
   `ra` varchar(15) CHARACTER SET latin1 DEFAULT NULL,
   `responsavelId` int(11) DEFAULT NULL,
-  `pessoaId` int(11) NOT NULL,
+  `primeiroNome` varchar(45) NOT NULL,
+  `ultimoNome` varchar(45) DEFAULT NULL,
+  `dataNascimento` date DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `FK_ALUNO_TURMA_idx` (`turmaId`),
   KEY `FK_ALUNO_RESPONSAVEL_idx` (`responsavelId`),
-  KEY `FK_ALUNO_PESSOA_idx` (`pessoaId`),
-  CONSTRAINT `FK_ALUNO_PESSOA` FOREIGN KEY (`pessoaId`) REFERENCES `Pessoa` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `FK_ALUNO_RESPONSAVEL` FOREIGN KEY (`responsavelId`) REFERENCES `responsavel` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `FK_ALUNO_TURMA` FOREIGN KEY (`turmaId`) REFERENCES `turma` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -80,20 +64,6 @@ CREATE TABLE `aula` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Table structure for table `colegio`
---
-
-DROP TABLE IF EXISTS `colegio`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `colegio` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `nomeColegio` varchar(50) CHARACTER SET latin1 NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
 -- Table structure for table `endereco`
 --
 
@@ -106,10 +76,10 @@ CREATE TABLE `endereco` (
   `numero` varchar(8) CHARACTER SET latin1 DEFAULT NULL,
   `complemento` varchar(50) CHARACTER SET latin1 DEFAULT NULL,
   `logradouro` varchar(85) CHARACTER SET latin1 NOT NULL,
-  `pessoaId` int(11) NOT NULL,
+  `alunoId` int(11) NOT NULL,
   PRIMARY KEY (`id`),
-  KEY `FK_ENDERECO_PESSOA_idx` (`pessoaId`),
-  CONSTRAINT `FK_ENDERECO_PESSOA` FOREIGN KEY (`pessoaId`) REFERENCES `Pessoa` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+  KEY `FK_ENDERECO_ALUNO_idx` (`alunoId`),
+  CONSTRAINT `FK_ENDERECO_ALUNO` FOREIGN KEY (`alunoId`) REFERENCES `aluno` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -153,58 +123,17 @@ CREATE TABLE `nota` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Table structure for table `papel_pessoa`
+-- Table structure for table `papelPessoa`
 --
 
-DROP TABLE IF EXISTS `papel_pessoa`;
+DROP TABLE IF EXISTS `papelPessoa`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `papel_pessoa` (
+CREATE TABLE `papelPessoa` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `tipoPessoaId` int(11) NOT NULL,
-  `professorId` int(11) NOT NULL,
-  `alunoId` int(11) NOT NULL,
-  PRIMARY KEY (`id`),
-  KEY `FK_TIPO_PESSOA_idx` (`tipoPessoaId`),
-  KEY `FK_PROFESSOR_idx` (`professorId`),
-  KEY `FK_ALUNO_idx` (`alunoId`),
-  CONSTRAINT `FK_PAPELPESSOA_ALUNO` FOREIGN KEY (`alunoId`) REFERENCES `aluno` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT `FK_PAPELPESSOA_PROFESSOR` FOREIGN KEY (`professorId`) REFERENCES `professor` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT `FK_PAPELPESSOA_TIPOPESSOA` FOREIGN KEY (`tipoPessoaId`) REFERENCES `tipo_pessoa` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `permissao`
---
-
-DROP TABLE IF EXISTS `permissao`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `permissao` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `nomePermissao` varchar(50) CHARACTER SET latin1 DEFAULT NULL,
+  `descricao` varchar(55) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `permissao_pessoa`
---
-
-DROP TABLE IF EXISTS `permissao_pessoa`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `permissao_pessoa` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `permissaoId` int(11) NOT NULL,
-  `papelPessoaId` int(11) NOT NULL,
-  PRIMARY KEY (`id`),
-  KEY `FK_PAPEL_PESSOA_idx` (`papelPessoaId`),
-  KEY `FK_PERMISSAO_PESSOA` (`permissaoId`),
-  CONSTRAINT `FK_PERMISSAO_PAPELPESSOA` FOREIGN KEY (`papelPessoaId`) REFERENCES `papel_pessoa` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT `FK_PERMISSAO_PESSOA` FOREIGN KEY (`permissaoId`) REFERENCES `permissao` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -241,13 +170,13 @@ CREATE TABLE `responsavel` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Table structure for table `tipo_nota`
+-- Table structure for table `tipoNota`
 --
 
-DROP TABLE IF EXISTS `tipo_nota`;
+DROP TABLE IF EXISTS `tipoNota`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `tipo_nota` (
+CREATE TABLE `tipoNota` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `quantidade_nota` int(11) NOT NULL,
   PRIMARY KEY (`id`)
@@ -255,13 +184,13 @@ CREATE TABLE `tipo_nota` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Table structure for table `tipo_pessoa`
+-- Table structure for table `tipoPessoa`
 --
 
-DROP TABLE IF EXISTS `tipo_pessoa`;
+DROP TABLE IF EXISTS `tipoPessoa`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `tipo_pessoa` (
+CREATE TABLE `tipoPessoa` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `nome` varchar(45) CHARACTER SET latin1 DEFAULT NULL,
   PRIMARY KEY (`id`)
@@ -278,10 +207,7 @@ DROP TABLE IF EXISTS `turma`;
 CREATE TABLE `turma` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `nome` varchar(45) CHARACTER SET latin1 DEFAULT NULL,
-  `colegioId` int(11) DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `FK_COLEGIO_idx` (`colegioId`),
-  CONSTRAINT `FK_TURMA_COLEGIO` FOREIGN KEY (`colegioId`) REFERENCES `colegio` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -294,15 +220,15 @@ DROP TABLE IF EXISTS `usuario`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `usuario` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `papelPessoaId` int(11) DEFAULT NULL,
-  `usuarioHash` varchar(64) CHARACTER SET latin1 DEFAULT NULL,
-  `senhaHash` varchar(64) CHARACTER SET latin1 DEFAULT NULL,
+  `email` varchar(100) NOT NULL,
+  `senha` varchar(64) CHARACTER SET latin1 NOT NULL,
   `nome` varchar(45) CHARACTER SET latin1 DEFAULT NULL,
-  `permissaoId` int(11) DEFAULT NULL,
+  `papelPessoaId` int(11) NOT NULL,
+  `usuarioHash` varchar(64) CHARACTER SET latin1 DEFAULT NULL,
   PRIMARY KEY (`id`),
-  KEY `FK_PERMISSAOID_idx` (`permissaoId`),
-  CONSTRAINT `FK_USUARIO_PERMISSAO` FOREIGN KEY (`permissaoId`) REFERENCES `permissao` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+  KEY `USUARIO_PAPELPESSOA_idx` (`papelPessoaId`),
+  CONSTRAINT `USUARIO_PAPELPESSOA` FOREIGN KEY (`papelPessoaId`) REFERENCES `papelPessoa` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -314,4 +240,4 @@ CREATE TABLE `usuario` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2022-05-08 15:49:45
+-- Dump completed on 2022-05-10 22:05:01
