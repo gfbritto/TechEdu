@@ -22,30 +22,33 @@ namespace TechEdu.Controllers
             return View();
         }
 
-        public IActionResult Login()
+        public IActionResult Login(bool erroLogin)
         {
+            if (erroLogin)
+            {
+                ViewBag.Erro = "Usuário e/ou senha inválidos";
+            }
+
+            if (HttpContext.User.Identity.IsAuthenticated)
+            {
+                return RedirectToAction("Index");
+            }
+
             return View();
         }
 
         [HttpPost, AllowAnonymous]
-        public async Task<IActionResult> Login([Bind("Email, Senha")] Usuario user)
+        public async Task<IActionResult> AuthUser([Bind("Email, Senha")] Usuario user)
         {
-
             var autenticatedUser = _context.Usuarios.Include(roles => roles.PapelPessoa)
                 .SingleOrDefault(u => u.Email.Equals(user.Email) && u.Senha.Equals(user.Senha));
 
             if (autenticatedUser != null)
             {
                 await new AuthService().Login(HttpContext, autenticatedUser);
-                return View("Index");
+                return RedirectToAction("Index");
             }
-            return View("Login");
-        }
-
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
-        {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+            return RedirectToAction("Login");
         }
     }
 }
