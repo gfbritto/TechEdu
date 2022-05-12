@@ -26,4 +26,8 @@
     <ProjectReference Include="..\TechEdu.Models\TechEdu.Models.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\img\" />
+  </ItemGroup>
+
 </Project>
