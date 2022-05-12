@@ -9,9 +9,9 @@ namespace TechEdu.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly colegioContext _context;
+        private readonly ColegioContext _context;
 
-        public HomeController(colegioContext context)
+        public HomeController(ColegioContext context)
         {
             _context = context;
         }

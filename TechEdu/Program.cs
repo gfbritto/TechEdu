@@ -15,7 +15,7 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
     });
 
 var connection = builder.Configuration.GetConnectionString("MySqlDefault");
-builder.Services.AddDbContext<colegioContext>(options => options
+builder.Services.AddDbContext<ColegioContext>(options => options
    .UseMySql(connection, ServerVersion.Parse("5.7.33-mysql"))
 );
 

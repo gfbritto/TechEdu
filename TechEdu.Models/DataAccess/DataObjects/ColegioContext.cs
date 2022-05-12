@@ -5,13 +5,13 @@ using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace TechEdu.Models.DataAccess.DataObjects
 {
-    public partial class colegioContext : DbContext
+    public partial class ColegioContext : DbContext
     {
-        public colegioContext()
+        public ColegioContext()
         {
         }
 
-        public colegioContext(DbContextOptions<colegioContext> options)
+        public ColegioContext(DbContextOptions<ColegioContext> options)
             : base(options)
         {
         }
@@ -33,7 +33,6 @@ namespace TechEdu.Models.DataAccess.DataObjects
         {
             if (!optionsBuilder.IsConfigured)
             {
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
                 optionsBuilder.UseMySql("server=servidordetestes.bounceme.net;uid=adm;pwd=techedu;database=colegio", Microsoft.EntityFrameworkCore.ServerVersion.Parse("5.7.33-mysql"));
             }
         }

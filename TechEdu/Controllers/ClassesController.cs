@@ -9,9 +9,9 @@ namespace TechEdu.Controllers
     [Authorize("Master,Professor")]
     public class ClassesController : Controller
     {
-        private readonly colegioContext _context;
+        private readonly ColegioContext _context;
 
-        public ClassesController(colegioContext context)
+        public ClassesController(ColegioContext context)
         {
             _context = context;
         }
