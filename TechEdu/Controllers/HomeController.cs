@@ -22,11 +22,12 @@ namespace TechEdu.Controllers
             return View();
         }
 
+        [AllowAnonymous]
         public IActionResult Login(bool erroLogin)
         {
             if (erroLogin)
             {
-                ViewBag.Erro = "Usuário e/ou senha inválidos";
+                ViewBag.Erro = "Nickname e/ou senha estão incorretos";
             }
 
             if (HttpContext.User.Identity.IsAuthenticated)
@@ -48,7 +49,7 @@ namespace TechEdu.Controllers
                 await new AuthService().Login(HttpContext, autenticatedUser);
                 return RedirectToAction("Index");
             }
-            return RedirectToAction("Login");
+            return RedirectToAction("Login", new { erroLogin = true });
         }
     }
 }

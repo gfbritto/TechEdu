@@ -25,8 +25,14 @@
                                     <label asp-for="Senha" class="control-label"></label>
                                     <span asp-validation-for="Senha" class="text-danger"></span>
                                 </div>
+                                @if (!string.IsNullOrWhiteSpace(ViewBag.erro))
+                                {
+                                    <div class="text-danger">
+                                        @ViewBag.Erro.ToString()
+                                    </div>
+                                }
                                 <div class="d-grid gap-3">
-                                     <input type="submit" value="Login" class="default-button btn-lg" />
+                                    <input type="submit" value="Login" class="default-button btn-lg" />
                                 </div>
                             </div>
                         </form>
