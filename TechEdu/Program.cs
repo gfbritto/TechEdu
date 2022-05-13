@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.CookiePolicy;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
 builder.Services.AddControllersWithViews();
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>
@@ -13,6 +12,9 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
         options.LoginPath = new PathString("/Home/Login");
         options.AccessDeniedPath = new PathString("/Home/Login");
     });
+
+builder.Services.AddControllersWithViews()
+    .AddRazorRuntimeCompilation();
 
 var connection = builder.Configuration.GetConnectionString("MySqlDefault");
 builder.Services.AddDbContext<ColegioContext>(options => options
