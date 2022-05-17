@@ -1,11 +1,14 @@
 ﻿#nullable disable
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using TechEdu.Models;
 using TechEdu.Models.DataAccess.DataObjects;
 
 namespace TechEdu.Controllers
 {
+    [Authorize]
     public class StudentsController : Controller
     {
         private readonly ColegioContext _context;
@@ -15,7 +18,6 @@ namespace TechEdu.Controllers
             _context = context;
         }
 
-        // GET: Students
         public async Task<IActionResult> Index()
         {
             var colegioContext = _context.Alunos.Include(a => a.Responsavel).Include(a => a.Turma);
@@ -43,6 +45,7 @@ namespace TechEdu.Controllers
         }
 
         // GET: Students/Create
+        []
         public IActionResult Create()
         {
             ViewData["ResponsavelId"] = new SelectList(_context.Responsavels, "Id", "Id");
@@ -91,6 +94,7 @@ namespace TechEdu.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = TechEduRoles.Master)]
         public async Task<IActionResult> Edit(int id, [Bind("Id,TurmaId,Ra,ResponsavelId,PrimeiroNome,UltimoNome,DataNascimento")] Aluno aluno)
         {
             if (id != aluno.Id)
@@ -123,7 +127,7 @@ namespace TechEdu.Controllers
             return View(aluno);
         }
 
-        // GET: Students/Delete/5
+        [Authorize(Roles = TechEduRoles.Master)]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -143,9 +147,9 @@ namespace TechEdu.Controllers
             return View(aluno);
         }
 
-        // POST: Students/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = TechEduRoles.Master)]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var aluno = await _context.Alunos.FindAsync(id);

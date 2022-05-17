@@ -1,12 +1,12 @@
-﻿#nullable disable
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using TechEdu.Models;
 using TechEdu.Models.DataAccess.DataObjects;
 
 namespace TechEdu.Controllers
 {
-    [Authorize("Master,Professor")]
+    [Authorize]
     public class ClassesController : Controller
     {
         private readonly ColegioContext _context;
@@ -16,14 +16,11 @@ namespace TechEdu.Controllers
             _context = context;
         }
 
-        // GET: Classes
-
         public async Task<IActionResult> Index()
         {
             return View(await _context.Turmas.ToListAsync());
         }
 
-        // GET: Classes/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -41,17 +38,15 @@ namespace TechEdu.Controllers
             return View(turma);
         }
 
-        // GET: Classes/Create
+        [Authorize(Roles = TechEduRoles.Master)]
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Classes/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = TechEduRoles.Master)]
         public async Task<IActionResult> Create([Bind("Id,Nome")] Turma turma)
         {
             if (ModelState.IsValid)
@@ -63,7 +58,7 @@ namespace TechEdu.Controllers
             return View(turma);
         }
 
-        // GET: Classes/Edit/5
+        [Authorize(Roles = TechEduRoles.Master)]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -79,11 +74,9 @@ namespace TechEdu.Controllers
             return View(turma);
         }
 
-        // POST: Classes/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = TechEduRoles.Master)]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Nome")] Turma turma)
         {
             if (id != turma.Id)
@@ -114,7 +107,7 @@ namespace TechEdu.Controllers
             return View(turma);
         }
 
-        // GET: Classes/Delete/5
+        [Authorize(Roles = TechEduRoles.Master)]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -132,9 +125,9 @@ namespace TechEdu.Controllers
             return View(turma);
         }
 
-        // POST: Classes/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = TechEduRoles.Master)]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var turma = await _context.Turmas.FindAsync(id);
