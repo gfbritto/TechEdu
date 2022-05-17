@@ -44,8 +44,7 @@ namespace TechEdu.Controllers
             return View(aluno);
         }
 
-        // GET: Students/Create
-        []
+        [Authorize(Roles = TechEduRoles.Master)]
         public IActionResult Create()
         {
             ViewData["ResponsavelId"] = new SelectList(_context.Responsavels, "Id", "Id");
@@ -53,11 +52,9 @@ namespace TechEdu.Controllers
             return View();
         }
 
-        // POST: Students/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = TechEduRoles.Master)]
         public async Task<IActionResult> Create([Bind("Id,TurmaId,Ra,ResponsavelId,PrimeiroNome,UltimoNome,DataNascimento")] Aluno aluno)
         {
             if (ModelState.IsValid)
@@ -71,7 +68,7 @@ namespace TechEdu.Controllers
             return View(aluno);
         }
 
-        // GET: Students/Edit/5
+        [Authorize(Roles = TechEduRoles.Master)]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -89,9 +86,6 @@ namespace TechEdu.Controllers
             return View(aluno);
         }
 
-        // POST: Students/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = TechEduRoles.Master)]
@@ -130,7 +124,7 @@ namespace TechEdu.Controllers
         [Authorize(Roles = TechEduRoles.Master)]
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null)
+            if (id is null)
             {
                 return NotFound();
             }
