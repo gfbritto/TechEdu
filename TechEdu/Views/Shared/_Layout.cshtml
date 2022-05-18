@@ -13,7 +13,7 @@
 </head>
 <body class="background-default h-100">
     <div class="min-vh-100 d-flex flex-column justify-content-between">
-        <div>
+        <header>
             <nav class="navbar navbar-expand-lg navbar-dark background-primary">
                 <div class="container-fluid fs-4">
                     <a class="navbar-brand fs-4" href="/page/master/main.html">
@@ -48,8 +48,10 @@
                             </li>
                         </ul>
                         <div class="navbar-nav">
+                            <form asp-controller="Home" asp-action="Create">
+                            </form>
                             <div class="nav-item dropdown dropstart w-auto">
-                                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button"
+                                <a class="nav-link dropdown-toggle" asp-controller="Home" asp-action="Index" id="navbarDropdownMenuLink" role="button"
                                    data-bs-toggle="dropdown" aria-expanded="false">
                                     <i class="bi bi-person-circle pe-3"></i>José Silva
                                 </a>
@@ -67,20 +69,19 @@
                                     <li>
                                         <hr class="dropdown-divider">
                                     </li>
-                                    <li><a class="dropdown-item" href="../../index.html">Sair</a></li>
+                                    <li><button class="dropdown-item" type="submit">Sair</button></li>
                                 </ul>
                             </div>
                         </div>
                     </div>
                 </div>
             </nav>
-        </div>
-
-        <div class="container">
-            <main role="main" class="pb-3">
+        </header>
+        <main>
+            <div class="container my-5">
                 @RenderBody()
-            </main>
-        </div>
+            </div>
+        </main>
         <footer class="footer py-3 background-primary bottom-0 w-100">
             <div class="container text-center">
                 <span class="text-light">Powered By: TechEdu Solutions 2022</span>
