@@ -18,5 +18,10 @@ namespace TechEdu.Controllers
         {
             return View();
         }
+
+        public IActionResult Login()
+        {
+            return PartialView("_Login");
+        }
     }
 }

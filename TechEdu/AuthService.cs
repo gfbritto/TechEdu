@@ -12,6 +12,7 @@ namespace TechEdu
             var claims = new List<Claim>
             {
                 new Claim(ClaimTypes.Email, user.Email),
+                new Claim(ClaimTypes.Name, user.Nome),
                 new Claim(ClaimTypes.Role, user.PapelPessoa.Descricao)
             };
 

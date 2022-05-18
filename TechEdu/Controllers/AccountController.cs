@@ -43,5 +43,12 @@ namespace TechEdu.Controllers
             }
             return RedirectToAction("Login", new { erroLogin = true });
         }
+
+        [Authorize]
+        public async Task<IActionResult> Logoff()
+        {
+            await new AuthService().Logoff(HttpContext);
+            return RedirectToAction("Login", "Account");
+        }
     }
 }
