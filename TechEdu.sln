@@ -7,6 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TechEdu", "TechEdu\TechEdu.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TechEdu.Models", "TechEdu.Models\TechEdu.Models.csproj", "{CBFA55CF-793C-4811-A661-9040F65D2273}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TechEdu.Services", "TechEdu.Services\TechEdu.Services.csproj", "{71177A3B-BD96-435E-BCF2-31993B918220}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{CBFA55CF-793C-4811-A661-9040F65D2273}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CBFA55CF-793C-4811-A661-9040F65D2273}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CBFA55CF-793C-4811-A661-9040F65D2273}.Release|Any CPU.Build.0 = Release|Any CPU
+		{71177A3B-BD96-435E-BCF2-31993B918220}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{71177A3B-BD96-435E-BCF2-31993B918220}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{71177A3B-BD96-435E-BCF2-31993B918220}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{71177A3B-BD96-435E-BCF2-31993B918220}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

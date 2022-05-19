@@ -25,6 +25,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\TechEdu.Models\TechEdu.Models.csproj" />
+    <ProjectReference Include="..\TechEdu.Services\TechEdu.Services.csproj" />
   </ItemGroup>
 
   <ItemGroup>

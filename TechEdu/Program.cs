@@ -2,8 +2,12 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 using TechEdu.Models.DataAccess.DataObjects;
 using Microsoft.AspNetCore.CookiePolicy;
+using TechEdu.Services.Interfaces;
+using TechEdu.Services;
+using TechEdu.Models.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
+
 
 builder.Services.AddControllersWithViews();
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
@@ -20,6 +24,14 @@ var connection = builder.Configuration.GetConnectionString("MySqlDefault");
 builder.Services.AddDbContext<ColegioContext>(options => options
    .UseMySql(connection, ServerVersion.Parse("5.7.33-mysql"))
 );
+
+var settings = builder.Configuration.GetSection("Settings").Get<Settings>();
+
+// Dependency injection
+builder.Services.AddScoped<ICryptographyService>(c => new CryptographyService(
+                settings.Cryptography.Key,
+                settings.Cryptography.InicializationVector)
+            );
 
 var app = builder.Build();
 
