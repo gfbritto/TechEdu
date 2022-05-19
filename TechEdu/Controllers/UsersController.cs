@@ -6,16 +6,19 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using TechEdu.Models.DataAccess.DataObjects;
+using TechEdu.Services.Interfaces;
 
 namespace TechEdu.Controllers
 {
     public class UsersController : Controller
     {
         private readonly ColegioContext _context;
+        private readonly ICryptographyService _cryptographyService;
 
-        public UsersController(ColegioContext context)
+        public UsersController(ColegioContext context, ICryptographyService cryptographyService)
         {
             _context = context;
+            _cryptographyService = cryptographyService;
         }
 
         // GET: Users
@@ -23,6 +26,10 @@ namespace TechEdu.Controllers
         {
             var colegioContext = _context.Usuarios.Include(u => u.PapelPessoa);
             return View(await colegioContext.ToListAsync());
+        }
+        public IActionResult Login()
+        {
+            return PartialView("_Login");
         }
 
         // GET: Users/Details/5
