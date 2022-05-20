@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata;
+﻿using Microsoft.EntityFrameworkCore;
 
 namespace TechEdu.Models.DataAccess.DataObjects
 {
@@ -23,9 +20,7 @@ namespace TechEdu.Models.DataAccess.DataObjects
         public virtual DbSet<Notum> Nota { get; set; } = null!;
         public virtual DbSet<PapelPessoa> PapelPessoas { get; set; } = null!;
         public virtual DbSet<Professor> Professors { get; set; } = null!;
-        public virtual DbSet<Responsavel> Responsavels { get; set; } = null!;
         public virtual DbSet<TipoNotum> TipoNota { get; set; } = null!;
-        public virtual DbSet<TipoPessoa> TipoPessoas { get; set; } = null!;
         public virtual DbSet<Turma> Turmas { get; set; } = null!;
         public virtual DbSet<Usuario> Usuarios { get; set; } = null!;
 
@@ -33,6 +28,7 @@ namespace TechEdu.Models.DataAccess.DataObjects
         {
             if (!optionsBuilder.IsConfigured)
             {
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
                 optionsBuilder.UseMySql("server=servidordetestes.bounceme.net;uid=adm;pwd=techedu;database=colegio", Microsoft.EntityFrameworkCore.ServerVersion.Parse("5.7.33-mysql"));
             }
         }
@@ -45,8 +41,6 @@ namespace TechEdu.Models.DataAccess.DataObjects
             modelBuilder.Entity<Aluno>(entity =>
             {
                 entity.ToTable("aluno");
-
-                entity.HasIndex(e => e.ResponsavelId, "FK_ALUNO_RESPONSAVEL_idx");
 
                 entity.HasIndex(e => e.TurmaId, "FK_ALUNO_TURMA_idx");
 
@@ -66,10 +60,6 @@ namespace TechEdu.Models.DataAccess.DataObjects
                     .UseCollation("latin1_swedish_ci")
                     .HasCharSet("latin1");
 
-                entity.Property(e => e.ResponsavelId)
-                    .HasColumnType("int(11)")
-                    .HasColumnName("responsavelId");
-
                 entity.Property(e => e.TurmaId)
                     .HasColumnType("int(11)")
                     .HasColumnName("turmaId");
@@ -77,11 +67,6 @@ namespace TechEdu.Models.DataAccess.DataObjects
                 entity.Property(e => e.UltimoNome)
                     .HasMaxLength(45)
                     .HasColumnName("ultimoNome");
-
-                entity.HasOne(d => d.Responsavel)
-                    .WithMany(p => p.Alunos)
-                    .HasForeignKey(d => d.ResponsavelId)
-                    .HasConstraintName("FK_ALUNO_RESPONSAVEL");
 
                 entity.HasOne(d => d.Turma)
                     .WithMany(p => p.Alunos)
@@ -306,33 +291,6 @@ namespace TechEdu.Models.DataAccess.DataObjects
                     .HasCharSet("latin1");
             });
 
-            modelBuilder.Entity<Responsavel>(entity =>
-            {
-                entity.ToTable("responsavel");
-
-                entity.Property(e => e.Id)
-                    .HasColumnType("int(11)")
-                    .HasColumnName("id");
-
-                entity.Property(e => e.Email)
-                    .HasMaxLength(50)
-                    .HasColumnName("email")
-                    .UseCollation("latin1_swedish_ci")
-                    .HasCharSet("latin1");
-
-                entity.Property(e => e.Nome)
-                    .HasMaxLength(50)
-                    .HasColumnName("nome")
-                    .UseCollation("latin1_swedish_ci")
-                    .HasCharSet("latin1");
-
-                entity.Property(e => e.Telefone)
-                    .HasMaxLength(45)
-                    .HasColumnName("telefone")
-                    .UseCollation("latin1_swedish_ci")
-                    .HasCharSet("latin1");
-            });
-
             modelBuilder.Entity<TipoNotum>(entity =>
             {
                 entity.ToTable("tipoNota");
@@ -344,21 +302,6 @@ namespace TechEdu.Models.DataAccess.DataObjects
                 entity.Property(e => e.QuantidadeNota)
                     .HasColumnType("int(11)")
                     .HasColumnName("quantidade_nota");
-            });
-
-            modelBuilder.Entity<TipoPessoa>(entity =>
-            {
-                entity.ToTable("tipoPessoa");
-
-                entity.Property(e => e.Id)
-                    .HasColumnType("int(11)")
-                    .HasColumnName("id");
-
-                entity.Property(e => e.Nome)
-                    .HasMaxLength(45)
-                    .HasColumnName("nome")
-                    .UseCollation("latin1_swedish_ci")
-                    .HasCharSet("latin1");
             });
 
             modelBuilder.Entity<Turma>(entity =>
@@ -403,12 +346,6 @@ namespace TechEdu.Models.DataAccess.DataObjects
                 entity.Property(e => e.Senha)
                     .HasMaxLength(64)
                     .HasColumnName("senha")
-                    .UseCollation("latin1_swedish_ci")
-                    .HasCharSet("latin1");
-
-                entity.Property(e => e.UsuarioHash)
-                    .HasMaxLength(64)
-                    .HasColumnName("usuarioHash")
                     .UseCollation("latin1_swedish_ci")
                     .HasCharSet("latin1");
 
