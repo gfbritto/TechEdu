@@ -20,7 +20,6 @@ namespace TechEdu.Controllers
             _cryptographyService = cryptographyService;
         }
 
-        [Authorize(Roles = TechEduRoles.Teacher)]
         public async Task<IActionResult> Index()
         {
             var colegioContext = _context.Usuarios.Include(u => u.PapelPessoa);
@@ -32,7 +31,6 @@ namespace TechEdu.Controllers
             return PartialView("_Login");
         }
 
-        [Authorize(Roles = TechEduRoles.Teacher)]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null || _context.Usuarios == null)
