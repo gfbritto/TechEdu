@@ -149,7 +149,7 @@ namespace TechEdu.Controllers
             {
                 _context.Materia.Remove(materium);
             }
-            
+
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
