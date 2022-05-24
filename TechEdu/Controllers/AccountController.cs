@@ -2,16 +2,19 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using TechEdu.Models.DataAccess.DataObjects;
+using TechEdu.Services.Interfaces;
 
 namespace TechEdu.Controllers
 {
     public class AccountController : Controller
     {
         private readonly ColegioContext _context;
+        private readonly ICryptographyService _cryptographyService;
 
-        public AccountController(ColegioContext context)
+        public AccountController(ColegioContext context, ICryptographyService cryptographyService)
         {
             _context = context;
+            _cryptographyService = cryptographyService;
         }
 
         [HttpGet]
@@ -33,8 +36,10 @@ namespace TechEdu.Controllers
         [HttpPost, AllowAnonymous]
         public async Task<IActionResult> AuthUser([Bind("Email, Senha")] Usuario user)
         {
-            var autenticatedUser = _context.Usuarios.Include(roles => roles.PapelPessoa)
-                .SingleOrDefault(u => u.Email.Equals(user.Email) && u.Senha.Equals(user.Senha));
+            user.Senha = await _cryptographyService.EncryptStringAsync(user.Senha);
+
+            var autenticatedUser = await _context.Usuarios.Include(roles => roles.PapelPessoa)
+                .SingleOrDefaultAsync(u => u.Email.Equals(user.Email) && u.Senha.Equals(user.Senha));
 
             if (autenticatedUser != null)
             {

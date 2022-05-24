@@ -18,6 +18,7 @@ namespace TechEdu.Controllers
             _context = context;
         }
 
+        [Authorize(Roles = TechEduRoles.Master)]
         [Authorize(Roles = TechEduRoles.Teacher)]
         public async Task<IActionResult> Index()
         {
@@ -25,6 +26,7 @@ namespace TechEdu.Controllers
             return View(await colegioContext.ToListAsync());
         }
 
+        [Authorize(Roles = TechEduRoles.Master)]
         [Authorize(Roles = TechEduRoles.Teacher)]
         public async Task<IActionResult> Details(int? id)
         {

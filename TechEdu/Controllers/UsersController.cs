@@ -45,7 +45,7 @@ namespace TechEdu.Controllers
             {
                 return NotFound();
             }
-
+            usuario.Senha = await _cryptographyService.DecryptStringAsync(usuario.Senha);
             return View(usuario);
         }
 
@@ -59,8 +59,10 @@ namespace TechEdu.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Email,Senha,Nome,PapelPessoaId")] Usuario usuario)
         {
+            ModelState.Clear();
             if (ModelState.IsValid)
             {
+                usuario.Senha = await _cryptographyService.EncryptStringAsync(usuario.Senha);
                 _context.Add(usuario);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -81,6 +83,7 @@ namespace TechEdu.Controllers
             {
                 return NotFound();
             }
+            usuario.Senha = await _cryptographyService.DecryptStringAsync(usuario.Senha);
             ViewData["PapelPessoaId"] = new SelectList(_context.PapelPessoas, "Id", "Descricao", usuario.PapelPessoaId);
             return View(usuario);
         }
@@ -98,6 +101,7 @@ namespace TechEdu.Controllers
             {
                 try
                 {
+                    usuario.Senha = await _cryptographyService.EncryptStringAsync(usuario.Senha);
                     _context.Update(usuario);
                     await _context.SaveChangesAsync();
                 }
@@ -156,7 +160,7 @@ namespace TechEdu.Controllers
 
         private bool UsuarioExists(int id)
         {
-          return (_context.Usuarios?.Any(e => e.Id == id)).GetValueOrDefault();
+            return (_context.Usuarios?.Any(e => e.Id == id)).GetValueOrDefault();
         }
     }
 }
