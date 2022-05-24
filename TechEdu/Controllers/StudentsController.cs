@@ -8,8 +8,7 @@ using TechEdu.Models.DataAccess.DataObjects;
 
 namespace TechEdu.Controllers
 {
-    [Authorize(Roles = TechEduRoles.Master)]
-    [Authorize(Roles = TechEduRoles.Teacher)]
+    [Authorize(Roles = $"{TechEduRoles.Teacher},{TechEduRoles.Master}")]
     public class StudentsController : Controller
     {
         private readonly ColegioContext _context;
