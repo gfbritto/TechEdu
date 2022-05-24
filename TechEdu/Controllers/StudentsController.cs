@@ -9,6 +9,7 @@ using TechEdu.Models.DataAccess.DataObjects;
 namespace TechEdu.Controllers
 {
     [Authorize(Roles = TechEduRoles.Master)]
+    [Authorize(Roles = TechEduRoles.Teacher)]
     public class StudentsController : Controller
     {
         private readonly ColegioContext _context;
@@ -18,16 +19,12 @@ namespace TechEdu.Controllers
             _context = context;
         }
 
-        [Authorize(Roles = TechEduRoles.Master)]
-        [Authorize(Roles = TechEduRoles.Teacher)]
         public async Task<IActionResult> Index()
         {
             var colegioContext = _context.Alunos.Include(a => a.Turma);
             return View(await colegioContext.ToListAsync());
         }
 
-        [Authorize(Roles = TechEduRoles.Master)]
-        [Authorize(Roles = TechEduRoles.Teacher)]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -46,6 +43,7 @@ namespace TechEdu.Controllers
             return View(aluno);
         }
 
+        [Authorize(Roles = TechEduRoles.Master)]
         public IActionResult Create()
         {
             ViewData["TurmaId"] = new SelectList(_context.Turmas, "Id", "Nome");
@@ -54,6 +52,7 @@ namespace TechEdu.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = TechEduRoles.Master)]
         public async Task<IActionResult> Create([Bind("Id,TurmaId,Ra,PrimeiroNome,UltimoNome,DataNascimento")] Aluno aluno)
         {
             if (ModelState.IsValid)
@@ -66,6 +65,7 @@ namespace TechEdu.Controllers
             return View(aluno);
         }
 
+        [Authorize(Roles = TechEduRoles.Master)]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -84,6 +84,7 @@ namespace TechEdu.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = TechEduRoles.Master)]
         public async Task<IActionResult> Edit(int id, [Bind("Id,TurmaId,Ra,PrimeiroNome,UltimoNome,DataNascimento")] Aluno aluno)
         {
             if (id != aluno.Id)
@@ -115,6 +116,7 @@ namespace TechEdu.Controllers
             return View(aluno);
         }
 
+        [Authorize(Roles = TechEduRoles.Master)]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id is null)
@@ -135,6 +137,7 @@ namespace TechEdu.Controllers
 
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = TechEduRoles.Master)]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var aluno = await _context.Alunos.FindAsync(id);
