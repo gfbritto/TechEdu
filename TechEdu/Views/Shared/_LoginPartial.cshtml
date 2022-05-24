@@ -1,8 +1,6 @@
-﻿@page
-@using Microsoft.AspNetCore.Identity
+﻿@using Microsoft.AspNetCore.Identity
 @using System.Security.Claims
 @using TechEdu.Models.DataAccess.DataObjects
-@model TechEdu.Views.Shared._LoginPartialModel
 
 <form asp-controller="Account" asp-action="Logoff" method="post">
     <div class="nav-item dropdown dropstart w-auto">
@@ -16,8 +14,9 @@
                     <i class="bi bi-person-circle fs-3"></i>
                 </div>
                 <div>
-                    <span class="fs-3">@User.FindFirstValue(ClaimTypes.Name)</span>
-                    <span class="fs-5 text-muted">@User.FindFirstValue(ClaimTypes.Email)</span>
+                    <div class="fs-3">@User.FindFirstValue(ClaimTypes.Name)</div>
+                    <div class="fs-5 text-muted">@User.FindFirstValue(ClaimTypes.Role)</div>
+                    <div class="fs-5 text-muted">@User.FindFirstValue(ClaimTypes.Email)</div>
                 </div>
             </div>
             <li><a class="dropdown-item" href="#">Minha conta</a></li>

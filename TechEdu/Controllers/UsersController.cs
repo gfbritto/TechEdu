@@ -1,31 +1,36 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using TechEdu.Models;
 using TechEdu.Models.DataAccess.DataObjects;
+using TechEdu.Services.Interfaces;
 
 namespace TechEdu.Controllers
 {
+    [Authorize(Roles = TechEduRoles.Master)]
     public class UsersController : Controller
     {
         private readonly ColegioContext _context;
+        private readonly ICryptographyService _cryptographyService;
 
-        public UsersController(ColegioContext context)
+        public UsersController(ColegioContext context, ICryptographyService cryptographyService)
         {
             _context = context;
+            _cryptographyService = cryptographyService;
         }
 
-        // GET: Users
         public async Task<IActionResult> Index()
         {
             var colegioContext = _context.Usuarios.Include(u => u.PapelPessoa);
             return View(await colegioContext.ToListAsync());
         }
 
-        // GET: Users/Details/5
+        public IActionResult Login()
+        {
+            return PartialView("_Login");
+        }
+
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null || _context.Usuarios == null)
@@ -40,26 +45,24 @@ namespace TechEdu.Controllers
             {
                 return NotFound();
             }
-
+            usuario.Senha = await _cryptographyService.DecryptStringAsync(usuario.Senha);
             return View(usuario);
         }
 
-        // GET: Users/Create
         public IActionResult Create()
         {
             ViewData["PapelPessoaId"] = new SelectList(_context.PapelPessoas, "Id", "Descricao");
             return View();
         }
 
-        // POST: Users/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Email,Senha,Nome,PapelPessoaId,UsuarioHash")] Usuario usuario)
+        public async Task<IActionResult> Create([Bind("Id,Email,Senha,Nome,PapelPessoaId")] Usuario usuario)
         {
+            ModelState.Clear();
             if (ModelState.IsValid)
             {
+                usuario.Senha = await _cryptographyService.EncryptStringAsync(usuario.Senha);
                 _context.Add(usuario);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -68,7 +71,6 @@ namespace TechEdu.Controllers
             return View(usuario);
         }
 
-        // GET: Users/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null || _context.Usuarios == null)
@@ -81,16 +83,14 @@ namespace TechEdu.Controllers
             {
                 return NotFound();
             }
+            usuario.Senha = await _cryptographyService.DecryptStringAsync(usuario.Senha);
             ViewData["PapelPessoaId"] = new SelectList(_context.PapelPessoas, "Id", "Descricao", usuario.PapelPessoaId);
             return View(usuario);
         }
 
-        // POST: Users/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Email,Senha,Nome,PapelPessoaId,UsuarioHash")] Usuario usuario)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Email,Senha,Nome,PapelPessoaId")] Usuario usuario)
         {
             if (id != usuario.Id)
             {
@@ -101,6 +101,7 @@ namespace TechEdu.Controllers
             {
                 try
                 {
+                    usuario.Senha = await _cryptographyService.EncryptStringAsync(usuario.Senha);
                     _context.Update(usuario);
                     await _context.SaveChangesAsync();
                 }
@@ -121,7 +122,6 @@ namespace TechEdu.Controllers
             return View(usuario);
         }
 
-        // GET: Users/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null || _context.Usuarios == null)
@@ -140,7 +140,6 @@ namespace TechEdu.Controllers
             return View(usuario);
         }
 
-        // POST: Users/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
@@ -154,14 +153,14 @@ namespace TechEdu.Controllers
             {
                 _context.Usuarios.Remove(usuario);
             }
-            
+
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
         private bool UsuarioExists(int id)
         {
-          return (_context.Usuarios?.Any(e => e.Id == id)).GetValueOrDefault();
+            return (_context.Usuarios?.Any(e => e.Id == id)).GetValueOrDefault();
         }
     }
 }

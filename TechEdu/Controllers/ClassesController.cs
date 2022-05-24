@@ -6,7 +6,7 @@ using TechEdu.Models.DataAccess.DataObjects;
 
 namespace TechEdu.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = $"{TechEduRoles.Teacher},{TechEduRoles.Master}")]
     public class ClassesController : Controller
     {
         private readonly ColegioContext _context;
@@ -21,6 +21,7 @@ namespace TechEdu.Controllers
             return View(await _context.Turmas.ToListAsync());
         }
 
+        [Authorize(Roles = TechEduRoles.Master)]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -46,6 +47,7 @@ namespace TechEdu.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+
         [Authorize(Roles = TechEduRoles.Master)]
         public async Task<IActionResult> Create([Bind("Id,Nome")] Turma turma)
         {

@@ -4,6 +4,7 @@ using TechEdu.Models.DataAccess.DataObjects;
 
 namespace TechEdu.Controllers
 {
+    [Authorize]
     public class HomeController : Controller
     {
         private readonly ColegioContext _context;
@@ -12,16 +13,10 @@ namespace TechEdu.Controllers
         {
             _context = context;
         }
-
-        [Authorize]
+        
         public IActionResult Index()
         {
             return View();
-        }
-
-        public IActionResult Login()
-        {
-            return PartialView("_Login");
         }
     }
 }

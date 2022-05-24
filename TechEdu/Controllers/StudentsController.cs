@@ -8,7 +8,7 @@ using TechEdu.Models.DataAccess.DataObjects;
 
 namespace TechEdu.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = $"{TechEduRoles.Teacher},{TechEduRoles.Master}")]
     public class StudentsController : Controller
     {
         private readonly ColegioContext _context;
@@ -20,11 +20,10 @@ namespace TechEdu.Controllers
 
         public async Task<IActionResult> Index()
         {
-            var colegioContext = _context.Alunos.Include(a => a.Responsavel).Include(a => a.Turma);
+            var colegioContext = _context.Alunos.Include(a => a.Turma);
             return View(await colegioContext.ToListAsync());
         }
 
-        // GET: Students/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -33,7 +32,6 @@ namespace TechEdu.Controllers
             }
 
             var aluno = await _context.Alunos
-                .Include(a => a.Responsavel)
                 .Include(a => a.Turma)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (aluno == null)
@@ -47,7 +45,6 @@ namespace TechEdu.Controllers
         [Authorize(Roles = TechEduRoles.Master)]
         public IActionResult Create()
         {
-            ViewData["ResponsavelId"] = new SelectList(_context.Responsavels, "Id", "Id");
             ViewData["TurmaId"] = new SelectList(_context.Turmas, "Id", "Nome");
             return View();
         }
@@ -55,7 +52,7 @@ namespace TechEdu.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = TechEduRoles.Master)]
-        public async Task<IActionResult> Create([Bind("Id,TurmaId,Ra,ResponsavelId,PrimeiroNome,UltimoNome,DataNascimento")] Aluno aluno)
+        public async Task<IActionResult> Create([Bind("Id,TurmaId,Ra,PrimeiroNome,UltimoNome,DataNascimento")] Aluno aluno)
         {
             if (ModelState.IsValid)
             {
@@ -63,7 +60,6 @@ namespace TechEdu.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["ResponsavelId"] = new SelectList(_context.Responsavels, "Id", "Id", aluno.ResponsavelId);
             ViewData["TurmaId"] = new SelectList(_context.Turmas, "Id", "Nome", aluno.TurmaId);
             return View(aluno);
         }
@@ -81,7 +77,6 @@ namespace TechEdu.Controllers
             {
                 return NotFound();
             }
-            ViewData["ResponsavelId"] = new SelectList(_context.Responsavels, "Id", "Id", aluno.ResponsavelId);
             ViewData["TurmaId"] = new SelectList(_context.Turmas, "Id", "Nome", aluno.TurmaId);
             return View(aluno);
         }
@@ -89,7 +84,7 @@ namespace TechEdu.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = TechEduRoles.Master)]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,TurmaId,Ra,ResponsavelId,PrimeiroNome,UltimoNome,DataNascimento")] Aluno aluno)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,TurmaId,Ra,PrimeiroNome,UltimoNome,DataNascimento")] Aluno aluno)
         {
             if (id != aluno.Id)
             {
@@ -116,7 +111,6 @@ namespace TechEdu.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["ResponsavelId"] = new SelectList(_context.Responsavels, "Id", "Id", aluno.ResponsavelId);
             ViewData["TurmaId"] = new SelectList(_context.Turmas, "Id", "Nome", aluno.TurmaId);
             return View(aluno);
         }
@@ -130,7 +124,6 @@ namespace TechEdu.Controllers
             }
 
             var aluno = await _context.Alunos
-                .Include(a => a.Responsavel)
                 .Include(a => a.Turma)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (aluno == null)
