@@ -1,4 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System;
+using System.Collections.Generic;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace TechEdu.Models.DataAccess.DataObjects
 {
@@ -20,6 +23,7 @@ namespace TechEdu.Models.DataAccess.DataObjects
         public virtual DbSet<PapelPessoa> PapelPessoas { get; set; } = null!;
         public virtual DbSet<Professor> Professors { get; set; } = null!;
         public virtual DbSet<Turma> Turmas { get; set; } = null!;
+        public virtual DbSet<TurmaMaterium> TurmaMateria { get; set; } = null!;
         public virtual DbSet<Usuario> Usuarios { get; set; } = null!;
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -205,6 +209,8 @@ namespace TechEdu.Models.DataAccess.DataObjects
             {
                 entity.ToTable("professor");
 
+                entity.HasIndex(e => e.MateriaId, "PROFESSOR_MATERIA_idx");
+
                 entity.Property(e => e.Id)
                     .HasColumnType("int(11)")
                     .HasColumnName("id");
@@ -225,11 +231,20 @@ namespace TechEdu.Models.DataAccess.DataObjects
                     .HasColumnType("int(11)")
                     .HasColumnName("endereco");
 
+                entity.Property(e => e.MateriaId)
+                    .HasColumnType("int(11)")
+                    .HasColumnName("materiaId");
+
                 entity.Property(e => e.Nome)
                     .HasMaxLength(50)
                     .HasColumnName("nome")
                     .UseCollation("latin1_swedish_ci")
                     .HasCharSet("latin1");
+
+                entity.HasOne(d => d.Materia)
+                    .WithMany(p => p.Professors)
+                    .HasForeignKey(d => d.MateriaId)
+                    .HasConstraintName("PROFESSOR_MATERIA");
             });
 
             modelBuilder.Entity<Turma>(entity =>
@@ -245,6 +260,39 @@ namespace TechEdu.Models.DataAccess.DataObjects
                     .HasColumnName("nome")
                     .UseCollation("latin1_swedish_ci")
                     .HasCharSet("latin1");
+            });
+
+            modelBuilder.Entity<TurmaMaterium>(entity =>
+            {
+                entity.ToTable("turmaMateria");
+
+                entity.HasIndex(e => e.MateriaId, "FK_TURMAMATERIA_MATERIA_idx");
+
+                entity.HasIndex(e => e.TurmaId, "FK_TURMAMATERIA_TURMA_idx");
+
+                entity.Property(e => e.Id)
+                    .HasColumnType("int(11)")
+                    .HasColumnName("id");
+
+                entity.Property(e => e.MateriaId)
+                    .HasColumnType("int(11)")
+                    .HasColumnName("materiaId");
+
+                entity.Property(e => e.TurmaId)
+                    .HasColumnType("int(11)")
+                    .HasColumnName("turmaId");
+
+                entity.HasOne(d => d.Materia)
+                    .WithMany(p => p.TurmaMateria)
+                    .HasForeignKey(d => d.MateriaId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_TURMAMATERIA_MATERIA");
+
+                entity.HasOne(d => d.Turma)
+                    .WithMany(p => p.TurmaMateria)
+                    .HasForeignKey(d => d.TurmaId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_TURMAMATERIA_TURMA");
             });
 
             modelBuilder.Entity<Usuario>(entity =>

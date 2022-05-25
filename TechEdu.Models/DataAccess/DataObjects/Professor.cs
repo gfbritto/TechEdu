@@ -15,7 +15,9 @@ namespace TechEdu.Models.DataAccess.DataObjects
         public int? Endereco { get; set; }
         public string? Cpf { get; set; }
         public string? Contato { get; set; }
+        public int? MateriaId { get; set; }
 
+        public virtual Materium? Materia { get; set; }
         public virtual ICollection<Aula> Aulas { get; set; }
     }
 }
