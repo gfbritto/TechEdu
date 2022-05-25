@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata;
+﻿using Microsoft.EntityFrameworkCore;
 
 namespace TechEdu.Models.DataAccess.DataObjects
 {
@@ -226,10 +223,6 @@ namespace TechEdu.Models.DataAccess.DataObjects
                     .HasColumnName("cpf")
                     .UseCollation("latin1_swedish_ci")
                     .HasCharSet("latin1");
-
-                entity.Property(e => e.Endereco)
-                    .HasColumnType("int(11)")
-                    .HasColumnName("endereco");
 
                 entity.Property(e => e.MateriaId)
                     .HasColumnType("int(11)")

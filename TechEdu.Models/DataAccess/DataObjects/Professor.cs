@@ -12,7 +12,6 @@ namespace TechEdu.Models.DataAccess.DataObjects
 
         public int Id { get; set; }
         public string Nome { get; set; } = null!;
-        public int? Endereco { get; set; }
         public string? Cpf { get; set; }
         public string? Contato { get; set; }
         public int? MateriaId { get; set; }
