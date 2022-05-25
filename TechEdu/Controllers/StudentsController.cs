@@ -52,7 +52,7 @@ namespace TechEdu.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = TechEduRoles.Master)]
-        public async Task<IActionResult> Create([Bind("Id,TurmaId,Ra,PrimeiroNome,UltimoNome,DataNascimento")] Aluno aluno)
+        public async Task<IActionResult> Create([Bind("Id,TurmaId,Ra,PrimeiroNome,UltimoNome")] Aluno aluno)
         {
             if (ModelState.IsValid)
             {

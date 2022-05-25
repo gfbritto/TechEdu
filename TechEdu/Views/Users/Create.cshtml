@@ -19,17 +19,17 @@
             </div>
             <div class="form-group">
                 <label asp-for="Senha" class="control-label"></label>
-                <input asp-for="Senha" class="form-control" />
+                <input asp-for="Senha" required type="password" class="form-control" />
                 <span asp-validation-for="Senha" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Nome" class="control-label"></label>
-                <input asp-for="Nome" class="form-control" />
+                <input asp-for="Nome" required class="form-control" />
                 <span asp-validation-for="Nome" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="PapelPessoaId" class="control-label"></label>
-                <select asp-for="PapelPessoaId" class ="form-control" asp-items="ViewBag.PapelPessoaId"></select>
+                <select asp-for="PapelPessoaId" required class ="form-control" asp-items="ViewBag.PapelPessoaId"></select>
             </div>
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />

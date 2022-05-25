@@ -9,7 +9,6 @@ namespace TechEdu.Models.DataAccess.DataObjects
         {
             Alunos = new HashSet<Aluno>();
             Aulas = new HashSet<Aula>();
-            Nota = new HashSet<Notum>();
         }
 
         public int Id { get; set; }
@@ -17,6 +16,5 @@ namespace TechEdu.Models.DataAccess.DataObjects
 
         public virtual ICollection<Aluno> Alunos { get; set; }
         public virtual ICollection<Aula> Aulas { get; set; }
-        public virtual ICollection<Notum> Nota { get; set; }
     }
 }

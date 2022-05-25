@@ -17,10 +17,8 @@ namespace TechEdu.Models.DataAccess.DataObjects
         public virtual DbSet<Aula> Aulas { get; set; } = null!;
         public virtual DbSet<Endereco> Enderecos { get; set; } = null!;
         public virtual DbSet<Materium> Materia { get; set; } = null!;
-        public virtual DbSet<Notum> Nota { get; set; } = null!;
         public virtual DbSet<PapelPessoa> PapelPessoas { get; set; } = null!;
         public virtual DbSet<Professor> Professors { get; set; } = null!;
-        public virtual DbSet<TipoNotum> TipoNota { get; set; } = null!;
         public virtual DbSet<Turma> Turmas { get; set; } = null!;
         public virtual DbSet<Usuario> Usuarios { get; set; } = null!;
 
@@ -47,8 +45,6 @@ namespace TechEdu.Models.DataAccess.DataObjects
                 entity.Property(e => e.Id)
                     .HasColumnType("int(11)")
                     .HasColumnName("id");
-
-                entity.Property(e => e.DataNascimento).HasColumnName("dataNascimento");
 
                 entity.Property(e => e.PrimeiroNome)
                     .HasMaxLength(45)
@@ -192,61 +188,6 @@ namespace TechEdu.Models.DataAccess.DataObjects
                     .HasCharSet("latin1");
             });
 
-            modelBuilder.Entity<Notum>(entity =>
-            {
-                entity.ToTable("nota");
-
-                entity.HasIndex(e => e.AulaId, "FK_AULA_idx");
-
-                entity.HasIndex(e => e.AlunoId, "FK_NOTAS_ALUNO_idx");
-
-                entity.HasIndex(e => e.TurmaId, "FK_TURMA_idx");
-
-                entity.Property(e => e.Id)
-                    .HasColumnType("int(11)")
-                    .HasColumnName("id");
-
-                entity.Property(e => e.AlunoId)
-                    .HasColumnType("int(11)")
-                    .HasColumnName("alunoId");
-
-                entity.Property(e => e.AulaId)
-                    .HasColumnType("int(11)")
-                    .HasColumnName("aulaId");
-
-                entity.Property(e => e.Data)
-                    .HasColumnType("datetime")
-                    .HasColumnName("data");
-
-                entity.Property(e => e.Nota).HasColumnName("nota");
-
-                entity.Property(e => e.PosicaoNota)
-                    .HasColumnType("int(11)")
-                    .HasColumnName("posicao_nota");
-
-                entity.Property(e => e.TurmaId)
-                    .HasColumnType("int(11)")
-                    .HasColumnName("turmaId");
-
-                entity.HasOne(d => d.Aluno)
-                    .WithMany(p => p.Nota)
-                    .HasForeignKey(d => d.AlunoId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_NOTA_ALUNO");
-
-                entity.HasOne(d => d.Aula)
-                    .WithMany(p => p.Nota)
-                    .HasForeignKey(d => d.AulaId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_NOTA_AULA");
-
-                entity.HasOne(d => d.Turma)
-                    .WithMany(p => p.Nota)
-                    .HasForeignKey(d => d.TurmaId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_NOTA_TURMA");
-            });
-
             modelBuilder.Entity<PapelPessoa>(entity =>
             {
                 entity.ToTable("papelPessoa");
@@ -289,19 +230,6 @@ namespace TechEdu.Models.DataAccess.DataObjects
                     .HasColumnName("nome")
                     .UseCollation("latin1_swedish_ci")
                     .HasCharSet("latin1");
-            });
-
-            modelBuilder.Entity<TipoNotum>(entity =>
-            {
-                entity.ToTable("tipoNota");
-
-                entity.Property(e => e.Id)
-                    .HasColumnType("int(11)")
-                    .HasColumnName("id");
-
-                entity.Property(e => e.QuantidadeNota)
-                    .HasColumnType("int(11)")
-                    .HasColumnName("quantidade_nota");
             });
 
             modelBuilder.Entity<Turma>(entity =>
