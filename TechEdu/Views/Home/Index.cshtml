@@ -3,6 +3,42 @@
 }
 
 <div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    <main>
+        <div class="container my-5">
+            <div class="row gy-3 mb-5">
+                <div class="col-6 col-sm-4 col-md">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <div>Alunos matriculados</div>
+                            <div class="fs-4">@ViewBag.totalStudents</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6 col-sm-4 col-md">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <div>Total de turmas</div>
+                            <div class="fs-4">@ViewBag.totalClasses</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6 col-sm-4 col-md">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <div>Total de Professores</div>
+                            <div class="fs-4">@ViewBag.totalTeachers</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6 col-sm-4 col-md">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <div>Quantidade de Turmas</div>
+                            <div class="fs-4">@ViewBag.totalSubjects</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
 </div>
