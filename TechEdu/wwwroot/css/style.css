@@ -822,8 +822,215 @@ a {
     align-items: center;
 }
 
+.dashboard__container {
+    display: flex;
+    justify-content: space-between;
+    margin: 6rem auto;
+}
+
+@media only screen and (max-width: 1200px) {
+    .dashboard__container {
+        flex-direction: column;
+        background-color: #fff;
+        width: fit-content;
+        padding: 4rem;
+        border-radius: 3rem;
+    }
+}
+
+@media only screen and (max-width: 800px) {
+    .dashboard__container {
+        width: 80%;
+    }
+}
+
+@media only screen and (max-width: 500px) {
+    .dashboard__container {
+        width: 90%;
+    }
+}
+
+.dashboard__left {
+    background-color: #fff;
+    border-radius: 2rem;
+    padding: 5rem 4rem;
+    min-height: 64rem;
+}
+
+@media only screen and (max-width: 1500px) {
+    .dashboard__left {
+        min-height: 60rem;
+    }
+}
+
+@media only screen and (max-width: 1200px) {
+    .dashboard__left {
+        width: fit-content;
+        margin: 0 auto 3rem;
+        padding: 0 0;
+        min-height: unset;
+    }
+}
+
+@media only screen and (max-width: 800px) {
+    .dashboard__left {
+        width: 100%;
+    }
+}
+
+.dashboard__right {
+    max-width: 50%;
+}
+
+@media only screen and (max-width: 1200px) {
+    .dashboard__right {
+        max-width: unset;
+    }
+}
+
+@media only screen and (max-width: 800px) {
+    .dashboard__right {
+        width: 100%;
+    }
+}
+
+.dashboard__image {
+    position: relative;
+    width: 54rem;
+    min-height: 64rem;
+    border-radius: 3rem;
+    background-position: center;
+    background-size: cover;
+    margin: 0;
+}
+
+@media only screen and (max-width: 1500px) {
+    .dashboard__image {
+        width: 50rem;
+        min-height: 60rem;
+    }
+}
+
+@media only screen and (max-width: 1200px) {
+    .dashboard__image {
+        min-height: 40rem;
+    }
+}
+
+@media only screen and (max-width: 800px) {
+    .dashboard__image {
+        width: 100%;
+    }
+}
+
+@media only screen and (max-width: 800px) {
+    .dashboard__image {
+        min-height: 30rem;
+    }
+}
+
+.dashboard__image p {
+    position: absolute;
+    bottom: 7rem;
+    width: 100%;
+    background-color: #187CD9;
+    color: #fff;
+    font-size: 3rem;
+    font-weight: bold;
+    text-align: center;
+    padding: 2rem;
+}
+
+@media only screen and (max-width: 1500px) {
+    .dashboard__image p {
+        font-size: 2.6rem;
+    }
+}
+
+@media only screen and (max-width: 1200px) {
+    .dashboard__image p {
+        font-size: 2.2rem;
+        bottom: 6rem;
+    }
+}
+
+@media only screen and (max-width: 500px) {
+    .dashboard__image p {
+        padding: 1rem;
+    }
+}
+
+.d-user__perfil {
+    max-width: 26rem;
+    height: 26rem;
+    background-position: center;
+    background-size: cover;
+    margin: 0 auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 2.2rem;
+    border-radius: 2rem;
+}
+
+@media only screen and (max-width: 1500px) {
+    .d-user__perfil {
+        max-width: 22rem;
+        height: 22rem;
+    }
+}
+
+.d-user__name {
+    font-size: 2.8rem;
+    font-weight: bold;
+    color: #187CD9;
+}
+
+@media only screen and (max-width: 1500px) {
+    .d-user__name {
+        font-size: 2.6rem;
+    }
+}
+
+@media only screen and (max-width: 800px) {
+    .d-user__name {
+        font-size: 2.2rem;
+        text-align: center;
+    }
+}
+
+.d-user__box {
+    margin-top: 4rem;
+}
+
+.d-user__dados {
+    background-color: #189FD9;
+    max-width: 28rem;
+    margin: 0 auto 1.5rem;
+}
+
+@media only screen and (max-width: 1500px) {
+    .d-user__dados {
+        max-width: 26rem;
+    }
+}
+
+.d-user__dados p {
+    font-size: 2.4rem;
+    font-weight: bold;
+    color: #fff;
+    text-align: center;
+    padding: 0.5rem;
+}
+
+@media only screen and (max-width: 1500px) {
+    .d-user__dados p {
+        font-size: 2.2rem;
+    }
+}
+
 .bg-main-image {
-    background: url(../../assets/img/booksBackground2.jpg) no-repeat center;
+    background: url(../img/booksBackground2.jpg) no-repeat center;
     background-repeat: no-repeat;
     background-position: center;
     background-size: cover;
@@ -837,7 +1044,7 @@ a {
 
 @media only screen and (max-width: 768px) {
     .background-login {
-        background: url(../../assets/img/booksBackground2.jpg) no-repeat center;
+        background: url(../img/booksBackground2.jpg) no-repeat center;
         background-repeat: no-repeat;
         background-position: center;
         background-size: cover;
@@ -846,6 +1053,58 @@ a {
         right: 0px;
         width: 100%;
         height: 100%;
+    }
+}
+
+.background-boletim {
+    background-color: #16B8FD !important;
+}
+
+.background-notas {
+    background-color: #16E1FD !important;
+}
+
+.background-media {
+    background-color: #32A7FC !important;
+}
+
+.background-faltas {
+    background-color: #79C7FF !important;
+}
+
+.height-main {
+    height: 100% !important;
+}
+
+@media only screen and (max-width: 500px) {
+    .height-main {
+        height: unset;
+    }
+}
+
+/*  Materias   */
+.background-border {
+    border-radius: 10%;
+}
+
+.background-button {
+    border-color: #79C7FF !important;
+    background-color: #79C7FF !important;
+}
+
+.col-10 {
+    border-radius: 2rem;
+}
+
+    .col-10 button {
+        background-color: #189fd9;
+        color: #fff;
+        max-width: 50rem;
+    }
+
+@media only screen and (max-width: 800px) {
+    .col-10 button {
+        width: 80%;
     }
 }
 
