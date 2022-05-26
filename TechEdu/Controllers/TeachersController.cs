@@ -1,87 +1,84 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using TechEdu.Models;
 using TechEdu.Models.DataAccess.DataObjects;
 
 namespace TechEdu.Controllers
 {
-    [Authorize(Roles = $"{TechEduRoles.Teacher},{TechEduRoles.Master}")]
-    public class ClassesController : Controller
+    public class TeachersController : Controller
     {
         private readonly ColegioContext _context;
 
-        public ClassesController(ColegioContext context)
+        public TeachersController(ColegioContext context)
         {
             _context = context;
         }
 
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Turmas.ToListAsync());
+              return _context.Professors != null ? 
+                          View(await _context.Professors.ToListAsync()) :
+                          Problem("Entity set 'ColegioContext.Professors'  is null.");
         }
 
-        [Authorize(Roles = TechEduRoles.Master)]
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null)
+            if (id == null || _context.Professors == null)
             {
                 return NotFound();
             }
 
-            var turma = await _context.Turmas
+            var professor = await _context.Professors
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (turma == null)
+            if (professor == null)
             {
                 return NotFound();
             }
+            ViewData["MateriaId"] = new SelectList(_context.Materia, "Id", "Nome");
 
-            return View(turma);
+            return View(professor);
         }
 
-        [Authorize(Roles = TechEduRoles.Master)]
         public IActionResult Create()
         {
+            ViewData["MateriaId"] = new SelectList(_context.Materia, "Id", "Nome");
             return View();
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-
-        [Authorize(Roles = TechEduRoles.Master)]
-        public async Task<IActionResult> Create([Bind("Id,Nome")] Turma turma)
+        public async Task<IActionResult> Create([Bind("Id,Nome,Cpf,Contato,MateriaId")] Professor professor)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(turma);
+                _context.Add(professor);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(turma);
+            return View(professor);
         }
 
-        [Authorize(Roles = TechEduRoles.Master)]
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null)
+            if (id == null || _context.Professors == null)
             {
                 return NotFound();
             }
 
-            var turma = await _context.Turmas.FirstOrDefaultAsync(i => i.Id == id);
-            if (turma == null)
+            var professor = await _context.Professors.FindAsync(id);
+            if (professor == null)
             {
                 return NotFound();
             }
-            return View(turma);
+            ViewData["MateriaId"] = new SelectList(_context.Materia, "Id", "Nome", professor.MateriaId);
+            return View(professor);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = TechEduRoles.Master)]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Nome")] Turma turma)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Nome,Cpf,Contato")] Professor professor)
         {
-            if (id != turma.Id)
+            if (id != professor.Id)
             {
                 return NotFound();
             }
@@ -90,12 +87,12 @@ namespace TechEdu.Controllers
             {
                 try
                 {
-                    _context.Update(turma);
+                    _context.Update(professor);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!TurmaExists(turma.Id))
+                    if (!ProfessorExists(professor.Id))
                     {
                         return NotFound();
                     }
@@ -106,41 +103,47 @@ namespace TechEdu.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(turma);
+            return View(professor);
         }
 
-        [Authorize(Roles = TechEduRoles.Master)]
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null)
+            if (id == null || _context.Professors == null)
             {
                 return NotFound();
             }
 
-            var turma = await _context.Turmas
+            var professor = await _context.Professors
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (turma == null)
+            if (professor == null)
             {
                 return NotFound();
             }
 
-            return View(turma);
+            return View(professor);
         }
 
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = TechEduRoles.Master)]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var turma = await _context.Turmas.FindAsync(id);
-            _context.Turmas.Remove(turma);
+            if (_context.Professors == null)
+            {
+                return Problem("Entity set 'ColegioContext.Professors'  is null.");
+            }
+            var professor = await _context.Professors.FindAsync(id);
+            if (professor != null)
+            {
+                _context.Professors.Remove(professor);
+            }
+            
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool TurmaExists(int id)
+        private bool ProfessorExists(int id)
         {
-            return _context.Turmas.Any(e => e.Id == id);
+          return (_context.Professors?.Any(e => e.Id == id)).GetValueOrDefault();
         }
     }
 }

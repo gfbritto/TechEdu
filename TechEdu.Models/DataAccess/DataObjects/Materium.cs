@@ -7,12 +7,12 @@ namespace TechEdu.Models.DataAccess.DataObjects
     {
         public Materium()
         {
-            Aulas = new HashSet<Aula>();
+            Professors = new HashSet<Professor>();
         }
 
         public int Id { get; set; }
         public string Nome { get; set; } = null!;
 
-        public virtual ICollection<Aula> Aulas { get; set; }
+        public virtual ICollection<Professor> Professors { get; set; }
     }
 }

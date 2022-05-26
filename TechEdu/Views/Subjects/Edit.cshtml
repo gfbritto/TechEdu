@@ -1,12 +1,12 @@
-﻿@model TechEdu.Models.DataAccess.DataObjects.Turma
+﻿@model TechEdu.Models.DataAccess.DataObjects.Materium
 
 @{
     ViewData["Title"] = "Edit";
 }
 
-<h1>Editar</h1>
+<h1>Edit</h1>
 
-<h4>Turma</h4>
+<h4>Materium</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
@@ -26,11 +26,9 @@
 </div>
 
 <div>
-    <a asp-action="Index">Ver todas as turmas</a>
+    <a asp-action="Index">Back to List</a>
 </div>
 
 @section Scripts {
-    @{
-    await Html.RenderPartialAsync("_ValidationScriptsPartial");
-}
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }

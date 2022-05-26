@@ -1,45 +1,25 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using TechEdu.Models;
 using TechEdu.Models.DataAccess.DataObjects;
 
 namespace TechEdu.Controllers
 {
-    [Authorize(Roles = $"{TechEduRoles.Teacher},{TechEduRoles.Master}")]
-    public class ClassesController : Controller
+    public class SubjectsController : Controller
     {
         private readonly ColegioContext _context;
 
-        public ClassesController(ColegioContext context)
+        public SubjectsController(ColegioContext context)
         {
             _context = context;
         }
 
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Turmas.ToListAsync());
+              return _context.Materia != null ? 
+                          View(await _context.Materia.ToListAsync()) :
+                          Problem("Entity set 'ColegioContext.Materia'  is null.");
         }
 
-        [Authorize(Roles = TechEduRoles.Master)]
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var turma = await _context.Turmas
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (turma == null)
-            {
-                return NotFound();
-            }
-
-            return View(turma);
-        }
-
-        [Authorize(Roles = TechEduRoles.Master)]
         public IActionResult Create()
         {
             return View();
@@ -47,41 +27,37 @@ namespace TechEdu.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-
-        [Authorize(Roles = TechEduRoles.Master)]
-        public async Task<IActionResult> Create([Bind("Id,Nome")] Turma turma)
+        public async Task<IActionResult> Create([Bind("Id,Nome")] Materium materium)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(turma);
+                _context.Add(materium);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(turma);
+            return View(materium);
         }
 
-        [Authorize(Roles = TechEduRoles.Master)]
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null)
+            if (id == null || _context.Materia == null)
             {
                 return NotFound();
             }
 
-            var turma = await _context.Turmas.FirstOrDefaultAsync(i => i.Id == id);
-            if (turma == null)
+            var materium = await _context.Materia.FindAsync(id);
+            if (materium == null)
             {
                 return NotFound();
             }
-            return View(turma);
+            return View(materium);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = TechEduRoles.Master)]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Nome")] Turma turma)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Nome")] Materium materium)
         {
-            if (id != turma.Id)
+            if (id != materium.Id)
             {
                 return NotFound();
             }
@@ -90,12 +66,12 @@ namespace TechEdu.Controllers
             {
                 try
                 {
-                    _context.Update(turma);
+                    _context.Update(materium);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!TurmaExists(turma.Id))
+                    if (!MateriumExists(materium.Id))
                     {
                         return NotFound();
                     }
@@ -106,41 +82,48 @@ namespace TechEdu.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(turma);
+            return View(materium);
         }
 
-        [Authorize(Roles = TechEduRoles.Master)]
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null)
+            if (id == null || _context.Materia == null)
             {
                 return NotFound();
             }
 
-            var turma = await _context.Turmas
+            var materium = await _context.Materia
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (turma == null)
+            if (materium == null)
             {
                 return NotFound();
             }
 
-            return View(turma);
+            return View(materium);
         }
 
+        // POST: Subjects/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = TechEduRoles.Master)]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var turma = await _context.Turmas.FindAsync(id);
-            _context.Turmas.Remove(turma);
+            if (_context.Materia == null)
+            {
+                return Problem("Entity set 'ColegioContext.Materia'  is null.");
+            }
+            var materium = await _context.Materia.FindAsync(id);
+            if (materium != null)
+            {
+                _context.Materia.Remove(materium);
+            }
+
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool TurmaExists(int id)
+        private bool MateriumExists(int id)
         {
-            return _context.Turmas.Any(e => e.Id == id);
+          return (_context.Materia?.Any(e => e.Id == id)).GetValueOrDefault();
         }
     }
 }

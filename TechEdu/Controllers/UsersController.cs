@@ -31,23 +31,6 @@ namespace TechEdu.Controllers
             return PartialView("_Login");
         }
 
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null || _context.Usuarios == null)
-            {
-                return NotFound();
-            }
-
-            var usuario = await _context.Usuarios
-                .Include(u => u.PapelPessoa)
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (usuario == null)
-            {
-                return NotFound();
-            }
-            usuario.Senha = await _cryptographyService.DecryptStringAsync(usuario.Senha);
-            return View(usuario);
-        }
 
         public IActionResult Create()
         {

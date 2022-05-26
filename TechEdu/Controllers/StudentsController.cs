@@ -24,24 +24,6 @@ namespace TechEdu.Controllers
             return View(await colegioContext.ToListAsync());
         }
 
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var aluno = await _context.Alunos
-                .Include(a => a.Turma)
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (aluno == null)
-            {
-                return NotFound();
-            }
-
-            return View(aluno);
-        }
-
         [Authorize(Roles = TechEduRoles.Master)]
         public IActionResult Create()
         {
@@ -52,7 +34,7 @@ namespace TechEdu.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = TechEduRoles.Master)]
-        public async Task<IActionResult> Create([Bind("Id,TurmaId,Ra,PrimeiroNome,UltimoNome,DataNascimento")] Aluno aluno)
+        public async Task<IActionResult> Create([Bind("Id,TurmaId,Ra,PrimeiroNome,UltimoNome")] Aluno aluno)
         {
             if (ModelState.IsValid)
             {
