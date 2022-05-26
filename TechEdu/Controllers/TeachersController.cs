@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using TechEdu.Models.DataAccess.DataObjects;
 
@@ -33,18 +34,20 @@ namespace TechEdu.Controllers
             {
                 return NotFound();
             }
+            ViewData["MateriaId"] = new SelectList(_context.Materia, "Id", "Nome");
 
             return View(professor);
         }
 
         public IActionResult Create()
         {
+            ViewData["MateriaId"] = new SelectList(_context.Materia, "Id", "Nome");
             return View();
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Nome,Endereco,Cpf,Contato")] Professor professor)
+        public async Task<IActionResult> Create([Bind("Id,Nome,Cpf,Contato,MateriaId")] Professor professor)
         {
             if (ModelState.IsValid)
             {
@@ -67,12 +70,13 @@ namespace TechEdu.Controllers
             {
                 return NotFound();
             }
+            ViewData["MateriaId"] = new SelectList(_context.Materia, "Id", "Nome", professor.MateriaId);
             return View(professor);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Nome,Endereco,Cpf,Contato")] Professor professor)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Nome,Cpf,Contato")] Professor professor)
         {
             if (id != professor.Id)
             {

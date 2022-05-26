@@ -8,15 +8,11 @@ namespace TechEdu.Models.DataAccess.DataObjects
         public Turma()
         {
             Alunos = new HashSet<Aluno>();
-            Aulas = new HashSet<Aula>();
-            TurmaMateria = new HashSet<TurmaMaterium>();
         }
 
         public int Id { get; set; }
         public string? Nome { get; set; }
 
         public virtual ICollection<Aluno> Alunos { get; set; }
-        public virtual ICollection<Aula> Aulas { get; set; }
-        public virtual ICollection<TurmaMaterium> TurmaMateria { get; set; }
     }
 }

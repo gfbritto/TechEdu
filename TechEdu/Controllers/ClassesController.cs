@@ -68,7 +68,7 @@ namespace TechEdu.Controllers
                 return NotFound();
             }
 
-            var turma = await _context.Turmas.FindAsync(id);
+            var turma = await _context.Turmas.FirstOrDefaultAsync(i => i.Id == id);
             if (turma == null)
             {
                 return NotFound();

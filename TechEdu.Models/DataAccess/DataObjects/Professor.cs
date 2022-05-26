@@ -5,11 +5,6 @@ namespace TechEdu.Models.DataAccess.DataObjects
 {
     public partial class Professor
     {
-        public Professor()
-        {
-            Aulas = new HashSet<Aula>();
-        }
-
         public int Id { get; set; }
         public string Nome { get; set; } = null!;
         public string? Cpf { get; set; }
@@ -17,6 +12,5 @@ namespace TechEdu.Models.DataAccess.DataObjects
         public int? MateriaId { get; set; }
 
         public virtual Materium? Materia { get; set; }
-        public virtual ICollection<Aula> Aulas { get; set; }
     }
 }
