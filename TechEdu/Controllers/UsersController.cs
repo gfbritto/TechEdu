@@ -80,6 +80,7 @@ namespace TechEdu.Controllers
                 return NotFound();
             }
 
+            ModelState.Clear();
             if (ModelState.IsValid)
             {
                 try
